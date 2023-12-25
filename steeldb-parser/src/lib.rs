@@ -7,10 +7,18 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_select_parser() {
-        assert!(select::SelectParser::new().parse("select churros;").is_ok());
+    fn test_select_parser_single_column() {
+        let parser = select::SelectParser::new();
+        assert!(parser.parse("select churros;").is_ok());
         let v = vec!["churros".to_string()];
-        let parsed = select::SelectParser::new().parse("select churros;").unwrap();
+        let parsed = parser.parse("select churros;").unwrap();
         assert_eq!(v, parsed);
+    }
+
+    fn test_select_support_star() {
+        let parser = select::SelectParser::new();
+        assert!(parser.parse("select *;").is_ok());
+        let r = parser.parse("select *;").unwrap();
+        assert_eq!(r, vec!["*".to_string()]);
     }
 }

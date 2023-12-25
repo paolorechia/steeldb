@@ -8,4 +8,4 @@ pub Select: Vec<String> = {
     }
 };
 
-Literal: String = <s:r"[a-z]+"> => s.to_string();
+Literal: String = <s:r"[a-z\*_0-9]+"> => s.to_string();

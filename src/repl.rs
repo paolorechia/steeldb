@@ -55,7 +55,8 @@ impl Repl {
                     break;
                 }
                 self.is_in_multiline = false;
-                self.database.execute(self.read_lines.join(" "));
+                self.database
+                    .execute(self.read_lines.join(" ").to_lowercase());
             }
             // Multine line command, keep reading
             else {
