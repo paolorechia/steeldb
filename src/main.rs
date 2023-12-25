@@ -1,3 +1,6 @@
+use steeldb::repl::Repl;
+
 fn main() {
-    println!("Hello, world!");
+    let mut repl = Repl::new();
+    repl.main_loop();
 }
