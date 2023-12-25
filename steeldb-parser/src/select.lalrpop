@@ -1,11 +1,16 @@
-grammar;
+grammar(v: &mut Vec<String>);
 
-pub Select: Vec<String> = {
-    <s:r"select "> <l:Literal> <c:";"> => {
-        let mut v: Vec::<String> = Vec::<String>::new();
-        v.push(l);
-        v
-    }
+pub Select: () = {
+    SELECT <c:Columns> SEMICOLON => {}
 };
 
-Literal: String = <s:r"[a-z\*_0-9]+"> => s.to_string();
+Columns: () = {
+    <l:LITERAL> => v.push(l),
+    Columns "," <l:LITERAL> => {
+        v.push(l);
+    }
+}
+
+SELECT: String = <s:r"select "> => s.to_string();
+LITERAL: String = <s:r"[a-z\*_0-9]+"> => s.to_string();
+SEMICOLON: String = <s:r";"> => s.to_string();
