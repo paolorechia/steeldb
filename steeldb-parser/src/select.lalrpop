@@ -1,0 +1,11 @@
+grammar;
+
+pub Select: Vec<String> = {
+    <s:r"select "> <l:Literal> <c:";"> => {
+        let mut v: Vec::<String> = Vec::<String>::new();
+        v.push(l);
+        v
+    }
+};
+
+Literal: String = <s:r"[a-z]+"> => s.to_string();
