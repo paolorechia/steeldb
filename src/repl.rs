@@ -21,18 +21,18 @@ impl Repl {
     }
 
     fn print_banner(&self) {
-        println!("--------------------------------");
-        println!("|                              |");
-        println!("|   SteelDB                    |");
-        println!("{}", format!("|   version: {}             |", VERSION));
-        println!("|                              |");
-        println!("--------------------------------");
+        println!("------------------------------------------------");
+        println!("|                                               |");
+        println!("|   SteelDB                                     |");
+        println!("{}", format!("|   version: {}                              |", VERSION));
+        println!("|                                               |");
+        println!("------------------------------------------------");
         println!("");
     }
 
     fn print_help(&self) {
         println!("Type 'exit;' to leave this shell");
-        println!("Current supported commands: []");
+        println!("Current supported commands: [select]");
         println!("");
     }
 
