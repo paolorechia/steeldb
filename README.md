@@ -8,11 +8,14 @@ This is a study repository. This is mostly for personal use.
 3. https://build-your-own.org/database/
 
 
+# Roadmap
+This is not a binding roadmap.
+
 ## What do we need to build a Database like SQLite from scratch?
 
-1. A REPL shell [x]
-3. A tokenizer [x]
-4. A parser [x]
+1. A REPL shell
+3. A tokenizer
+4. A parser
 5. A code generator
 6. A virtual machine that interprets the generated code
 7. A B+ Tree
@@ -20,7 +23,7 @@ This is a study repository. This is mostly for personal use.
 9. OS Interface
 
 
-### For the first iteration
+### For the first iteration: the bare bones (v0.1.0)
 We can simplify some components in the first iteration, so we have first a working end-to-end system.
 We can then tweak the individual components to have more capabilities.
 
@@ -32,20 +35,38 @@ Here are some simplifications we can do for our first iteration:
 4. Keep the database persisted into a single file.
 5. Use a single statically defined table.
 
+Our roadmap for the first iteration might end up looking like this:
 
-### Second iteration
-1. Add create table command
-2. Multiple tables query support (add FROM clause support)
-3. Support filters (add WHERE clause support)
+1. A REPL shell [x]
+3. A tokenizer [x]
+4. A parser [x]
+5. Add support for the SELECT clause [x]
+6. A code generator []
+7. A virtual machine that interprets the generated code []
+8. A table struct that stores data in HashMap of Vectors []
+9. A serialization / desserialization method to write/read data from file []
 
 
-### Third iteration
-1. Add another API besides the REPL to query the database. This can be either a traditional TCP or a (serverless friendly) HTTP server.
+### Second iteration: making it usable (v0.2.0)
+1. Add another API besides the REPL to query the database []
+   * This can be either a traditional TCP or a HTTP server. It should be as simple as possible, and just receive a string of the SQL command 
+3. Add create table command []
+4. Add delete table command []
+5. Add alter table command []
+6. Multiple tables query support (add FROM clause support) []
+7. Support filters (add WHERE clause support) []
+
+### Third iteration: making it scalable (v0.3.0)
+1. Handle concurrency: needs research on approaches to use []
+2. Implement B+ or similar algorithm []
+3. Adds caching (or pagination) []
+4. Support for transactions []
 
 
+
+# Knowledge base
 
 ## How do we build each of these components in Rust?
-
 
 ### REPL Shell
 This is pobably the simplest component. We just need to implement a CLI shell that reads lines of input until the command end symbol is presented (like ';').
