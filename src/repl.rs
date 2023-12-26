@@ -24,7 +24,10 @@ impl Repl {
         println!("------------------------------------------------");
         println!("|                                               |");
         println!("|   SteelDB                                     |");
-        println!("{}", format!("|   version: {}                              |", VERSION));
+        println!(
+            "{}",
+            format!("|   version: {}                              |", VERSION)
+        );
         println!("|                                               |");
         println!("------------------------------------------------");
         println!("");
