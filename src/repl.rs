@@ -40,6 +40,10 @@ impl Repl {
         println!("");
     }
 
+    fn print_table(&self, _table: Table) {
+        println!("Printing table...");
+    }
+
     pub fn main_loop(&mut self) {
         self.print_banner();
         self.print_help();
@@ -63,9 +67,25 @@ impl Repl {
                     .database
                     .execute(self.read_lines.join(" ").to_lowercase());
 
-                // match execution_result {
-
-                // }
+                match execution_result {
+                    ExecutionResult::VoidOK() => {
+                        println!("OK!");
+                    }
+                    ExecutionResult::TableResult(table) => {
+                        self.print_table(table);
+                    }
+                    ExecutionResult::ParseError(error) => {
+                        println!("<------------------- PARSE ERROR ------------------->");
+                        println!("{:?}", error);
+                        println!("");
+                        println!("Please check your input");
+                        println!("<--------------------------------------------------->");
+                    }
+                    ExecutionResult::CommandError(error) => {
+                        println!("Command failed");
+                        println!("{:?}", error);
+                    }
+                }
             }
             // Multine line command, keep reading
             else {
