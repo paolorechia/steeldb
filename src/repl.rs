@@ -40,8 +40,8 @@ impl Repl {
         println!("");
     }
 
-    fn print_table(&self, _table: Table) {
-        println!("Printing table...");
+    fn print_table(&self, table: Table) {
+        println!("{:?}", table);
     }
 
     pub fn main_loop(&mut self) {

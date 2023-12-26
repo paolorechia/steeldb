@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub enum DataType {
     String(String),
     Integer32(i32),
