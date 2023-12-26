@@ -1,11 +1,30 @@
-use crate::database::parser::parse_select;
-pub struct SteelDB {}
+use crate::database::command::Command;
+use crate::database::parser::{parse, ParseError};
+use crate::database::table_registry::TableRegistry;
+
+pub struct SteelDB {
+    table_registry: TableRegistry,
+}
 
 impl SteelDB {
     pub fn new() -> SteelDB {
-        return SteelDB {};
+        return SteelDB {
+            table_registry: TableRegistry {},
+        };
     }
-    pub fn execute(&self, _command: String) {
-        parse_select(_command);
+    pub fn execute(&self, user_input: String) {
+        let result = parse(user_input);
+        match result {
+            Ok(commands) => {
+                // invoke virtual machine here
+                // Command::SELECT(columns, table_name) => {
+                //     // execute select statement here against table
+                // }
+                println!("Commands succeded!")
+            }
+            Err(ParseError::Error(error)) => {
+                println!("{:?}", error);
+            }
+        }
     }
 }
