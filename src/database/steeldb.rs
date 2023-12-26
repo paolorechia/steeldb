@@ -1,26 +1,21 @@
-use crate::database::command::Command;
 use crate::database::parser::{parse, ParseError};
-use crate::database::table_registry::TableRegistry;
+use crate::database::virtual_machine::VirtualMachine;
 
 pub struct SteelDB {
-    table_registry: TableRegistry,
+    virtual_machine: VirtualMachine,
 }
 
 impl SteelDB {
     pub fn new() -> SteelDB {
         return SteelDB {
-            table_registry: TableRegistry {},
+            virtual_machine: VirtualMachine::new(),
         };
     }
-    pub fn execute(&self, user_input: String) {
+    pub fn execute(&mut self, user_input: String) {
         let result = parse(user_input);
         match result {
             Ok(commands) => {
-                // invoke virtual machine here
-                // Command::SELECT(columns, table_name) => {
-                //     // execute select statement here against table
-                // }
-                println!("Commands succeded!")
+                self.virtual_machine.execute(commands);
             }
             Err(ParseError::Error(error)) => {
                 println!("{:?}", error);

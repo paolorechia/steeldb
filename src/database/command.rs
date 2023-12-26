@@ -1,3 +1,12 @@
+use crate::database::table::Table;
+
 pub enum Command {
-    SELECT(Vec<String>, String), // columns, table_name
+    SelectFrom(Vec<String>, String), // columns, table_name
+}
+
+pub enum CommandResult {
+    RetrievedDataSuccess(Table),
+    VoidSuccess(),
+    UnknownFailure(String),
+    UnrecognizedCommand,
 }
