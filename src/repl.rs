@@ -6,7 +6,7 @@ use std::io::Write;
 
 pub struct Repl {
     buffer: String,
-    read_lines: Vec<String>,
+    previous_lines: Vec<String>,
     database: SteelDB,
     is_in_multiline: bool,
 }
@@ -15,7 +15,7 @@ impl Repl {
     pub fn new() -> Repl {
         return Repl {
             buffer: String::new(),
-            read_lines: Vec::<String>::new(),
+            previous_lines: Vec::<String>::new(),
             database: SteelDB::new(),
             is_in_multiline: false,
         };
@@ -56,7 +56,7 @@ impl Repl {
             io::stdout().flush().unwrap();
 
             io::stdin().read_line(&mut self.buffer).unwrap();
-            self.read_lines.push(self.buffer.clone());
+            self.previous_lines.push(self.buffer.clone());
             // Command ended
             if self.buffer.contains(";") {
                 if self.buffer.contains("exit") {
@@ -65,7 +65,7 @@ impl Repl {
                 self.is_in_multiline = false;
                 let execution_result = self
                     .database
-                    .execute(self.read_lines.join(" ").to_lowercase());
+                    .execute(self.previous_lines.join(" ").to_lowercase());
 
                 match execution_result {
                     ExecutionResult::VoidOK() => {
@@ -86,6 +86,8 @@ impl Repl {
                         println!("{:?}", error);
                     }
                 }
+                self.buffer.clear();
+                self.previous_lines.clear();
             }
             // Multine line command, keep reading
             else {
