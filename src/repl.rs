@@ -1,4 +1,5 @@
-use crate::database::steeldb::SteelDB;
+use crate::database::steeldb::{ExecutionResult, SteelDB};
+use crate::database::table::Table;
 use crate::VERSION;
 use std::io;
 use std::io::Write;
@@ -58,8 +59,13 @@ impl Repl {
                     break;
                 }
                 self.is_in_multiline = false;
-                self.database
+                let execution_result = self
+                    .database
                     .execute(self.read_lines.join(" ").to_lowercase());
+
+                // match execution_result {
+
+                // }
             }
             // Multine line command, keep reading
             else {

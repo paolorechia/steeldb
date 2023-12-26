@@ -7,13 +7,24 @@ pub struct Table {
     pub fields: HashMap<String, DataType>,
 }
 
+pub enum TableResult {
+    Success(Table),
+    LoadError(String),
+    ColumnNotFound(String),
+}
+
 impl Table {
-    pub fn load(table_name: String, select_columns: Vec<String>) -> Table {
+    pub fn load(table_name: String, select_columns: Vec<String>) -> TableResult {
         // for now return an empty table
-        let table = Table {
+        let mut table = Table {
             name: table_name,
             fields: HashMap::<String, DataType>::new(),
         };
-        return table;
+        for column in select_columns.into_iter() {
+            table
+                .fields
+                .insert(column.clone(), DataType::String(column));
+        }
+        return TableResult::Success(table);
     }
 }

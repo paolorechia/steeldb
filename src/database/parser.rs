@@ -1,5 +1,5 @@
 use super::command::Command;
-use super::table_registry::DEFAULT_TABLE;
+use super::table::DEFAULT_TABLE;
 use steeldb_parser::select::SelectParser;
 
 pub enum ParseError {
