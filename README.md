@@ -41,10 +41,11 @@ Our roadmap for the first iteration might end up looking like this:
 3. A tokenizer [x]
 4. A parser [x]
 5. Add support for the SELECT clause [x]
-6. A code generator []
-7. A virtual machine that interprets the generated code []
+6. A code generator [x]
+7. A virtual machine that interprets the generated code [x]
 8. A table struct that stores data in HashMap of Vectors []
-9. A serialization / desserialization method to write/read data from file []
+9. A hardcoded table for testing []
+10. A serialization / desserialization method to write/read data from file []
 
 
 ### Second iteration: making it usable (v0.2.0)
