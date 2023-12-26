@@ -10,9 +10,9 @@ This is a study repository. This is mostly for personal use.
 
 ## What do we need to build a Database like SQLite from scratch?
 
-1. A REPL shell
-3. A tokenizer
-4. A parser
+1. A REPL shell [x]
+3. A tokenizer [x]
+4. A parser [x]
 5. A code generator
 6. A virtual machine that interprets the generated code
 7. A B+ Tree
