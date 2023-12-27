@@ -46,7 +46,7 @@ Our roadmap for the first iteration might end up looking like this:
 8. A table struct that stores data in HashMap of Vectors [x]
 9. A hardcoded table for testing [x]
 10. Proper error propagation [x]
-11. Pretty printing of table in REPL []
+11. Pretty printing of table in REPL [x]
 12. A serialization / desserialization method to write/read data from file []
 
 
