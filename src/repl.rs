@@ -74,15 +74,14 @@ impl Repl {
     fn print_table_columns(
         &self,
         table: &Table,
-        column_names: &Vec<String>,
         number_rows: i32,
         column_widths: HashMap<String, i32>,
         names_length: i32,
     ) {
         for i in 0..number_rows {
             print!("|");
-            for j in 0..column_names.len() as i32 {
-                let col_name = column_names.get(j as usize).unwrap();
+            for j in 0..table.select_columns.len() as i32 {
+                let col_name = table.select_columns.get(j as usize).unwrap();
                 let col = table.columns.get(col_name).unwrap();
 
                 let maybe_value = col.get(i as usize);
@@ -128,14 +127,14 @@ impl Repl {
                     print!(" ");
                 }
 
-                if j < column_names.len() as i32 - 1 {
+                if j < table.select_columns.len() as i32 - 1 {
                     print!("|");
                 } else {
                     print!(" ");
                 }
             }
             println!("|");
-            self.print_separator_line(column_names.len() as i32, names_length)
+            self.print_separator_line(table.select_columns.len() as i32, names_length)
         }
     }
 
@@ -152,12 +151,10 @@ impl Repl {
         println!("DEBUG PRINT {:?}", table);
         println!("");
 
-        let number_columns = table.columns.len() as i32;
+        let number_columns = table.select_columns.len() as i32;
         let mut is_empty = false;
         let mut names_length: i32 = 0;
         let mut number_rows: i32 = 0;
-
-        let mut column_names: Vec<String> = vec![];
 
         let mut columns_iter = table.columns.iter();
         let maybe_column = columns_iter.next();
@@ -176,24 +173,17 @@ impl Repl {
         };
 
         // iterate over all columns
-        for (key, _) in table.columns.iter() {
-            names_length += key.len() as i32;
-            column_names.push(key.clone());
+        for name in table.select_columns.iter() {
+            names_length += name.len() as i32;
         }
 
         self.print_separator_line(number_columns, names_length);
 
-        let column_widths = self.print_table_fields(&column_names);
+        let column_widths = self.print_table_fields(&table.select_columns);
         self.print_separator_line(number_columns, names_length);
 
         if !is_empty {
-            self.print_table_columns(
-                &table,
-                &column_names,
-                number_rows,
-                column_widths,
-                names_length,
-            );
+            self.print_table_columns(&table, number_rows, column_widths, names_length);
         }
         io::stdout().flush().unwrap();
     }

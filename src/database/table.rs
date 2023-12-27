@@ -7,6 +7,7 @@ pub struct Table {
     pub name: String,
     pub fields: HashMap<String, DataType>,
     pub columns: HashMap<String, Vec<DataType>>,
+    pub select_columns: Vec<String>,
 }
 
 pub enum TableResult {
@@ -15,7 +16,7 @@ pub enum TableResult {
     ColumnNotFound(String),
 }
 
-fn format_column_not_found(column_name: String) -> String {
+fn format_column_not_found(column_name: &String) -> String {
     return format!("ERROR: Column not found {column_name}");
 }
 
@@ -54,17 +55,18 @@ impl Table {
                 name: table_name,
                 fields: fields,
                 columns: columns,
+                select_columns: select_columns,
             };
 
             let mut returned_columns = HashMap::<String, Vec<DataType>>::new();
-            for column_name in select_columns.into_iter() {
-                if !test_table.fields.contains_key(&column_name) {
+            for column_name in test_table.select_columns.iter() {
+                if !test_table.fields.contains_key(column_name) {
                     return TableResult::ColumnNotFound(format_column_not_found(column_name));
                 }
-                let retrieved_column = test_table.columns.get(&column_name);
+                let retrieved_column = test_table.columns.get(column_name);
                 match retrieved_column {
                     Some(col) => {
-                        returned_columns.insert(column_name, col.to_owned());
+                        returned_columns.insert(column_name.clone(), col.to_owned());
                     }
                     None => {
                         return TableResult::ColumnNotFound(format_column_not_found(column_name))
@@ -79,11 +81,12 @@ impl Table {
                 name: table_name,
                 fields: HashMap::<String, DataType>::new(),
                 columns: HashMap::<String, Vec<DataType>>::new(),
+                select_columns: select_columns,
             };
-            for column in select_columns.into_iter() {
+            for column in table.select_columns.iter() {
                 table
                     .fields
-                    .insert(column.clone(), DataType::String(column));
+                    .insert(column.clone(), DataType::String(column.clone()));
             }
             return TableResult::Success(table);
         }
