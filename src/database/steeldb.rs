@@ -31,7 +31,7 @@ impl SteelDB {
                     CommandResult::RetrievedDataSuccess(table) => {
                         return ExecutionResult::TableResult(table);
                     }
-                    CommandResult::VoidSuccess() => return ExecutionResult::VoidOK(),
+                    CommandResult::VoidSuccess => return ExecutionResult::VoidOK(),
                     CommandResult::Error(error) => {
                         return ExecutionResult::CommandError(error);
                     }

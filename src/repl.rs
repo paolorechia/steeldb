@@ -148,9 +148,6 @@ impl Repl {
     }
 
     fn print_table(&self, table: &Table) {
-        println!("DEBUG PRINT {:?}", table);
-        println!("");
-
         let number_columns = table.select_columns.len() as i32;
         let mut is_empty = false;
         let mut names_length: i32 = 0;

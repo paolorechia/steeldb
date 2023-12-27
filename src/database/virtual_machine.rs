@@ -30,6 +30,8 @@ impl VirtualMachine {
                 } else if let TableResult::ColumnNotFound(error) = table_result {
                     return CommandResult::Error(error);
                 }
+            } else if let Command::Stub = command {
+                return CommandResult::VoidSuccess;
             };
         }
 

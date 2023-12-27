@@ -1,6 +1,6 @@
-pub mod command;
+mod command;
 pub mod datatypes;
-pub mod parser;
+mod parser;
 pub mod steeldb;
 pub mod table;
-pub mod virtual_machine;
+mod virtual_machine;
