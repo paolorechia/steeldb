@@ -15,6 +15,10 @@ pub enum TableResult {
     ColumnNotFound(String),
 }
 
+fn format_column_not_found(column_name: String) -> String {
+    return format!("ERROR: Column not found {column_name}");
+}
+
 impl Table {
     pub fn load(table_name: String, select_columns: Vec<String>) -> TableResult {
         // hardcoded table
@@ -55,14 +59,16 @@ impl Table {
             let mut returned_columns = HashMap::<String, Vec<DataType>>::new();
             for column_name in select_columns.into_iter() {
                 if !test_table.fields.contains_key(&column_name) {
-                    return TableResult::ColumnNotFound(column_name);
+                    return TableResult::ColumnNotFound(format_column_not_found(column_name));
                 }
                 let retrieved_column = test_table.columns.get(&column_name);
                 match retrieved_column {
                     Some(col) => {
                         returned_columns.insert(column_name, col.to_owned());
                     }
-                    None => return TableResult::ColumnNotFound(column_name),
+                    None => {
+                        return TableResult::ColumnNotFound(format_column_not_found(column_name))
+                    }
                 }
             }
             test_table.columns = returned_columns;

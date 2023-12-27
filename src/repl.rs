@@ -75,15 +75,23 @@ impl Repl {
                         self.print_table(table);
                     }
                     ExecutionResult::ParseError(error) => {
+                        println!("");
+                        println!("");
                         println!("<------------------- PARSE ERROR ------------------->");
                         println!("{:?}", error);
                         println!("");
                         println!("Please check your input");
                         println!("<--------------------------------------------------->");
+                        println!("");
                     }
                     ExecutionResult::CommandError(error) => {
-                        println!("Command failed");
+                        println!("");
+                        println!("");
+                        println!("<------------------ COMMAND FAILED ------------------>");
                         println!("{:?}", error);
+                        println!("");
+                        println!("<---------------------------------------------------->");
+                        println!("");
                     }
                 }
                 self.buffer.clear();
