@@ -43,9 +43,11 @@ Our roadmap for the first iteration might end up looking like this:
 5. Add support for the SELECT clause [x]
 6. A code generator [x]
 7. A virtual machine that interprets the generated code [x]
-8. A table struct that stores data in HashMap of Vectors []
-9. A hardcoded table for testing []
-10. A serialization / desserialization method to write/read data from file []
+8. A table struct that stores data in HashMap of Vectors [x]
+9. A hardcoded table for testing [x]
+10. Pretty printing of table in REPL []
+11. Proper error propagation []
+12. A serialization / desserialization method to write/read data from file []
 
 
 ### Second iteration: making it usable (v0.2.0)
