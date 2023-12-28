@@ -1,6 +1,10 @@
 pub const DEFAULT_TABLE: &str = "test_table";
+pub const DATA_DIR: &str = "data";
 use crate::database::datatypes::DataType;
+use crate::database::file_io::{ColumnarWriter, FileFormat, Writer};
 use std::collections::HashMap;
+use std::fs::OpenOptions;
+use std::path::Path;
 
 #[derive(Debug)]
 pub struct Table {
@@ -16,11 +20,59 @@ pub enum TableResult {
     ColumnNotFound(String),
 }
 
+pub enum SaveMode {
+    Overwrite,
+    Append,
+}
+
+pub enum TableErrors {
+    TableNotFound,
+    TableAlreadyExists,
+}
+
 fn format_column_not_found(column_name: &String) -> String {
     return format!("ERROR: Column not found {column_name}");
 }
 
 impl Table {
+    pub fn save(table: Table, mode: SaveMode, format: FileFormat) -> Result<(), TableErrors> {
+        let s = format!("{}/{}.columnar_table", DATA_DIR, table.name);
+        let path = Path::new(&s);
+
+        // Pick up correct writer
+        let writer: Box<dyn Writer>;
+        match format {
+            FileFormat::SimpleColumnar => {
+                writer = ColumnarWriter::new();
+            }
+        }
+        // Adapt to the given mode
+        match mode {
+            SaveMode::Overwrite => {
+                let f = OpenOptions::new().write(true).create_new(true).open(path);
+                if f.is_err() {
+                    println!("{:?}", f.unwrap_err());
+                    return Err(TableErrors::TableAlreadyExists);
+                }
+                writer.write(&table.name, &table.fields, &table.columns, f.unwrap());
+            }
+
+            SaveMode::Append => {
+                let f = OpenOptions::new()
+                    .append(true)
+                    .write(true)
+                    .create(false)
+                    .open(path);
+                if f.is_err() {
+                    println!("{:?}", f.unwrap_err());
+                    return Err(TableErrors::TableNotFound);
+                }
+                writer.append(&table.name, &table.fields, &table.columns, f.unwrap());
+            }
+        }
+        return Ok(());
+    }
+
     pub fn load(table_name: String, select_columns: Vec<String>) -> TableResult {
         // hardcoded table
         if table_name == "test_table" {

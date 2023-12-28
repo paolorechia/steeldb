@@ -1,5 +1,6 @@
 mod command;
 pub mod datatypes;
+mod file_io;
 mod parser;
 pub mod steeldb;
 pub mod table;
