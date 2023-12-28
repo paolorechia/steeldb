@@ -52,19 +52,62 @@ Our roadmap for the first iteration might end up looking like this:
 
 ### Second iteration: making it usable (v0.2.0)
 1. Add another API besides the REPL to query the database []
-   * This can be either a traditional TCP or a HTTP server. It should be as simple as possible, and just receive a string of the SQL command 
+   * This can be either a traditional TCP or a HTTP server. It should be as simple as possible, and just receive a string of the SQL command
+   * Make REPL support both backends: Standalone process or network server
 3. Add create table command []
-4. Add delete table command []
+4. Add drop table command []
 5. Add alter table command []
 6. Multiple tables query support (add FROM clause support) []
-7. Support filters (add WHERE clause support) []
+7. Support filters (add basic WHERE clause support) []
+
+
 
 ### Third iteration: making it scalable (v0.3.0)
 1. Handle concurrency: needs research on approaches to use []
-2. Implement B+ or similar algorithm []
-3. Adds caching (or pagination) []
-4. Support for transactions []
+2. Add configuration file
+3. Implement B+ or similar algorithm.
+   * Ideally keep support for current columnar support []
+   * Support both in-memory and persistent
+4. Adds caching (or pagination) []
+5. Support for transactions []
 
+
+### Fourth iteration: making it useful (v0.4.0)
+1. Implement inner join []
+2. Implement left / right join []
+3. Implement outer join []
+4. Implement nested operations, including WHERE IN (SELECT) []
+4. Implement aggregations []
+
+
+
+### Fifth iteration: making it time-aware (v0.5.0)
+1. Implement advanced SQL features
+  * Window []
+  * Having []
+3. Add date and timestamp types []
+4. Implement more SQL functions []
+
+
+### Sixth iteration: making it complete (v0.6.0)
+1. Anything important missing in SQL standards
+
+
+
+### Seventh iteration: making it compatible (v0.7.0)
+1. Implement the Spark.SQL API in Rust
+
+
+### Eighth iteration: making it attractive (v0.8.0)
+1. Build a SDK in Rust to use it
+
+
+### Nineth iteration: making it snaky (v0.9.0)
+1. Build Python bindings for the Rust SDK
+
+
+### Tenth iteration: placeholder (v1.0.0)
+If we reached this point, we actually have an impressive system :)
 
 
 # Knowledge base
