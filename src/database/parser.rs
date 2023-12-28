@@ -1,5 +1,5 @@
 use super::command::Command;
-use super::table::DEFAULT_TABLE;
+use super::config::DEFAULT_TABLE;
 pub use steeldb_parser::{parse_select, ParseError};
 
 pub fn parse(input: String) -> Result<Vec<Command>, ParseError> {

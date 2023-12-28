@@ -1,7 +1,6 @@
-pub const DEFAULT_TABLE: &str = "test_table";
-pub const DATA_DIR: &str = "data";
 use crate::database::datatypes::DataType;
 use crate::database::file_io::{ColumnarWriter, FileFormat, Writer};
+use crate::database::config::{DATA_DIR, DEFAULT_TABLE};
 use std::collections::HashMap;
 use std::fs::OpenOptions;
 use std::path::Path;
@@ -14,6 +13,12 @@ pub struct Table {
     pub select_columns: Vec<String>,
 }
 
+pub enum TableErrors {
+    TableNotFound,
+    TableAlreadyExists,
+    WriteError(String),
+}
+
 pub enum TableResult {
     Success(Table),
     LoadError(String),
@@ -23,11 +28,6 @@ pub enum TableResult {
 pub enum SaveMode {
     Overwrite,
     Append,
-}
-
-pub enum TableErrors {
-    TableNotFound,
-    TableAlreadyExists,
 }
 
 fn format_column_not_found(column_name: &String) -> String {
@@ -54,7 +54,11 @@ impl Table {
                     println!("{:?}", f.unwrap_err());
                     return Err(TableErrors::TableAlreadyExists);
                 }
-                writer.write(&table.name, &table.fields, &table.columns, f.unwrap());
+                let write_result = writer.write(&table.fields, &table.columns, f.unwrap());
+                if write_result.is_err() {
+                    let s = format!("{:?}", write_result.unwrap_err());
+                    return Err(TableErrors::WriteError(s));
+                }
             }
 
             SaveMode::Append => {
@@ -67,7 +71,11 @@ impl Table {
                     println!("{:?}", f.unwrap_err());
                     return Err(TableErrors::TableNotFound);
                 }
-                writer.append(&table.name, &table.fields, &table.columns, f.unwrap());
+                let write_result = writer.append(&table.fields, &table.columns, f.unwrap());
+                if write_result.is_err() {
+                    let s = format!("{:?}", write_result.unwrap_err());
+                    return Err(TableErrors::WriteError(s));
+                }
             }
         }
         return Ok(());

@@ -1,6 +1,7 @@
 use crate::database::datatypes::DataType;
 use std::collections::HashMap;
 use std::fs::File;
+use std::io::Write;
 
 // Enums
 pub enum FileFormat {
@@ -11,22 +12,20 @@ pub enum FileFormat {
 pub trait Writer {
     fn write(
         &self,
-        name: &String,
         fields: &HashMap<String, DataType>,
         columns: &HashMap<String, Vec<DataType>>,
         file_: File,
-    );
+    ) -> Result<usize, std::io::Error>;
     fn append(
         &self,
-        name: &String,
         fields: &HashMap<String, DataType>,
         columns: &HashMap<String, Vec<DataType>>,
         file_: File,
-    );
+    ) -> Result<usize, std::io::Error>;
 }
 
 pub trait Reader {
-    fn read(&self, name: &String, fields: &HashMap<String, DataType>, file_: File);
+    fn read(&self, fields: &HashMap<String, DataType>, file_: File);
 }
 
 // Writer Implementations
@@ -35,19 +34,53 @@ pub struct ColumnarWriter {}
 impl Writer for ColumnarWriter {
     fn write(
         &self,
-        name: &String,
         fields: &HashMap<String, DataType>,
         columns: &HashMap<String, Vec<DataType>>,
-        file_: File,
-    ) {
+        mut file_: File,
+    ) -> Result<usize, std::io::Error> {
+        let mut written_bytes: usize = 0;
+
+        let mut result = file_.write(b"TABLE COLUMNAR FORMAT HEADER\n");
+        if result.is_err() {
+            return result;
+        } else {
+            written_bytes += result.unwrap();
+        }
+
+        for (key, value) in fields.iter() {
+            let number_elements = columns.get(key).unwrap().len();
+            let s = format!(
+                "Field name: {:?}; Type: {:?}; Number of elements: {:?}",
+                key,
+                value.name(),
+                number_elements
+            );
+            let b = s.as_bytes();
+            result = file_.write(b);
+
+            if result.is_err() {
+                return result;
+            } else {
+                written_bytes += result.unwrap();
+            }
+        }
+        result = file_.write(b"END OF FILE\n");
+
+        if result.is_err() {
+            return result;
+        } else {
+            written_bytes += result.unwrap();
+        }
+
+        return Ok(written_bytes);
     }
     fn append(
         &self,
-        name: &String,
         fields: &HashMap<String, DataType>,
         columns: &HashMap<String, Vec<DataType>>,
         file_: File,
-    ) {
+    ) -> Result<usize, std::io::Error> {
+        return Ok(0 as usize);
     }
 }
 
@@ -65,5 +98,5 @@ impl ColumnarReader {
     }
 }
 impl Reader for ColumnarReader {
-    fn read(&self, name: &String, fields: &HashMap<String, DataType>, file_: File) {}
+    fn read(&self, fields: &HashMap<String, DataType>, file_: File) {}
 }

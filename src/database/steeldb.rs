@@ -1,6 +1,7 @@
 use crate::database::command::CommandResult;
 use crate::database::parser::{parse, ParseError};
 use crate::database::table::Table;
+use crate::database::config::DATA_DIR;
 use crate::database::virtual_machine::VirtualMachine;
 
 pub struct SteelDB {

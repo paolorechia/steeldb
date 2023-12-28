@@ -5,3 +5,4 @@ mod parser;
 pub mod steeldb;
 pub mod table;
 mod virtual_machine;
+mod config;
