@@ -21,6 +21,7 @@ pub enum TableErrors {
     Error(String),
 }
 
+#[derive(Debug)]
 pub enum TableResult {
     Success(Table),
     LoadError(String),
@@ -45,7 +46,7 @@ impl Table {
     }
 
     pub fn save(&self, mode: SaveMode, format: FileFormat) -> Result<(), TableErrors> {
-        let s = format!("{}/{}.columnar_table", DATA_DIR, self.name);
+        let s = format!("{}/{}.columnar", DATA_DIR, self.name);
         let path = Path::new(&s);
 
         // Pick up correct writer
