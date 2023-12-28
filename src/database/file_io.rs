@@ -48,12 +48,12 @@ impl Writer for ColumnarWriter {
         }
 
         for (key, value) in fields.iter() {
-            let number_elements = columns.get(key).unwrap().len();
+            let column = columns.get(key).unwrap();
             let s = format!(
-                "Field name: {:?}; Type: {:?}; Number of elements: {:?}",
+                "Field name: {:?}; Type: {:?}; Number of elements: {:?}\n",
                 key,
                 value.name(),
-                number_elements
+                column.len()
             );
             let b = s.as_bytes();
             result = file_.write(b);
@@ -63,7 +63,30 @@ impl Writer for ColumnarWriter {
             } else {
                 written_bytes += result.unwrap();
             }
+
+            for value in column.iter() {
+                match value {
+                    DataType::String(str) => {
+                        let s = format!("{}\n", str);
+                        result = file_.write(s.as_bytes());
+                    }
+                    DataType::Integer32(str) => {
+                        let s = format!("{}\n", str);
+                        result = file_.write(s.as_bytes());
+                    }
+                    DataType::Float32(str) => {
+                        let s = format!("{}\n", str);
+                        result = file_.write(s.as_bytes());
+                    }
+                }
+                if result.is_err() {
+                    return result;
+                } else {
+                    written_bytes += result.unwrap();
+                }
+            }
         }
+
         result = file_.write(b"END OF FILE\n");
 
         if result.is_err() {
