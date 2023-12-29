@@ -29,7 +29,7 @@ pub trait Reader {
         &self,
         file_: File,
         select_columns: Vec<String>,
-    ) -> (HashMap<String, DataType>, HashMap<String, Vec<DataType>>);
+    ) -> Result<(HashMap<String, DataType>, HashMap<String, Vec<DataType>>), std::io::Error>;
 }
 
 // Writer Implementations
@@ -44,12 +44,7 @@ impl Writer for ColumnarWriter {
     ) -> Result<usize, std::io::Error> {
         let mut written_bytes: usize = 0;
 
-        let mut result = file_.write(b"TABLE COLUMNAR FORMAT HEADER\n");
-        if result.is_err() {
-            return result;
-        } else {
-            written_bytes += result.unwrap();
-        }
+        written_bytes += file_.write(b"TABLE COLUMNAR FORMAT HEADER\n")?;
 
         for (key, value) in fields.iter() {
             let column = columns.get(key).unwrap();
@@ -60,44 +55,26 @@ impl Writer for ColumnarWriter {
                 column.len()
             );
             let b = s.as_bytes();
-            result = file_.write(b);
-
-            if result.is_err() {
-                return result;
-            } else {
-                written_bytes += result.unwrap();
-            }
+            written_bytes += file_.write(b)?;
 
             for value in column.iter() {
                 match value {
                     DataType::String(str) => {
                         let s = format!("{}\n", str);
-                        result = file_.write(s.as_bytes());
+                        written_bytes += file_.write(s.as_bytes())?;
                     }
                     DataType::Integer32(str) => {
                         let s = format!("{}\n", str);
-                        result = file_.write(s.as_bytes());
+                        written_bytes += file_.write(s.as_bytes())?;
                     }
                     DataType::Float32(str) => {
                         let s = format!("{}\n", str);
-                        result = file_.write(s.as_bytes());
+                        written_bytes += file_.write(s.as_bytes())?;
                     }
-                }
-                if result.is_err() {
-                    return result;
-                } else {
-                    written_bytes += result.unwrap();
                 }
             }
         }
-
-        result = file_.write(b"END OF FILE\n");
-
-        if result.is_err() {
-            return result;
-        } else {
-            written_bytes += result.unwrap();
-        }
+        written_bytes += file_.write(b"END OF FILE\n")?;
 
         return Ok(written_bytes);
     }
@@ -129,17 +106,18 @@ impl Reader for ColumnarReader {
         &self,
         mut file_: File,
         select_columns: Vec<String>,
-    ) -> (HashMap<String, DataType>, HashMap<String, Vec<DataType>>) {
+    ) -> Result<(HashMap<String, DataType>, HashMap<String, Vec<DataType>>), std::io::Error> {
         // Prepare return output
         let mut fields = HashMap::<String, DataType>::new();
         let mut columns = HashMap::<String, Vec<DataType>>::new();
 
         // Read file
         let mut buffer = String::new();
-        let mut result = file_.read_to_string(&mut buffer);
+        let mut result = file_.read_to_string(&mut buffer)?;
+        // if result
         let lines = buffer.split("\n");
 
         // TODO: Should update output with file contents here
-        return (fields, columns);
+        return Ok((fields, columns));
     }
 }

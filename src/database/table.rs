@@ -115,8 +115,16 @@ impl Table {
             println!("{:?}", error);
             return Err(TableErrors::TableNotFound);
         }
+
         let f = file_.unwrap();
-        let (fields, columns) = reader.read(f, select_columns.clone());
+        let result = reader.read(f, select_columns.clone());
+        if result.is_err() {
+            let error = format!("{:?}", result.unwrap_err());
+            println!("{:?}", error);
+            return Err(TableErrors::ReadError(error));
+        }
+
+        let (fields, columns) = result.unwrap();
 
         let table = Table {
             name: table_name,
