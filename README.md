@@ -1,6 +1,6 @@
 # SteelDB
 
-This is a study repository. This is mostly for personal use.
+This is a study repository. This is mostly for personal use. Building a Database from scratch in Rust. Why not? :)
 
 ## Useful Links:
 1. https://cstack.github.io/db_tutorial/parts/part1.html
@@ -54,17 +54,18 @@ Our roadmap for the first iteration might end up looking like this:
 1. Add another API besides the REPL to query the database []
    * This can be either a traditional TCP or a HTTP server. It should be as simple as possible, and just receive a string of the SQL command
    * Make REPL support both backends: Standalone process or network server
-3. Add create table command []
-4. Add drop table command []
-5. Add alter table command []
-6. Multiple tables query support (add FROM clause support) []
-7. Support filters (add basic WHERE clause support) []
+2. Adds proper logging strategy to the server []
+3. Add configuration file []
+4. Add create table command []
+5. Add drop table command []
+6. Add alter table command []
+7. Multiple tables query support (add FROM clause support) []
+8. Support filters (add basic WHERE clause support) []
 
 
 
 ### Third iteration: making it scalable (v0.3.0)
 1. Handle concurrency: needs research on approaches to use []
-2. Add configuration file
 3. Implement B+ or similar algorithm.
    * Ideally keep support for current columnar support []
    * Support both in-memory and persistent
