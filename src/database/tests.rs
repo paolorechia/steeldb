@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod tests {
     use crate::database::config::DATA_DIR;
+    use crate::database::datatypes::DataType;
     use crate::database::file_io::FileFormat;
     use crate::database::table::{SaveMode, Table};
     use std::path::Path;
@@ -51,6 +52,51 @@ mod tests {
             select_columns,
             FileFormat::SimpleColumnar,
         );
-        load_result.unwrap();
+        let table = load_result.unwrap();
+
+        let name_column = table.columns.get("name").unwrap();
+        let matches: Vec<bool> = vec!["John", "Lenon", "Mary"]
+            .iter()
+            .zip(name_column.iter())
+            .map(|(left, right)| -> bool {
+                match right {
+                    DataType::String(s) => s == left,
+                    _ => panic!("Found not string in name column!"),
+                }
+            })
+            .collect();
+        for m in matches.iter() {
+            assert!(m);
+        }
+
+        let name_column = table.columns.get("annual_salary").unwrap();
+        let matches: Vec<bool> = vec![60000, 200000, 3000]
+            .iter()
+            .zip(name_column.iter())
+            .map(|(left, right)| -> bool {
+                match right {
+                    DataType::Integer32(i) => i == left,
+                    _ => panic!("Found not integer in annual salary column!"),
+                }
+            })
+            .collect();
+        for m in matches.iter() {
+            assert!(m);
+        }
+
+        let name_column = table.columns.get("final_grade").unwrap();
+        let matches: Vec<bool> = vec![4.0, 3.0, 5.0]
+            .iter()
+            .zip(name_column.iter())
+            .map(|(left, right)| -> bool {
+                match right {
+                    DataType::Float32(f) => f == left,
+                    _ => panic!("Found not float in final grade column!"),
+                }
+            })
+            .collect();
+        for m in matches.iter() {
+            assert!(m);
+        }
     }
 }
