@@ -2,7 +2,7 @@
 mod tests {
     use crate::database::config::DATA_DIR;
     use crate::database::file_io::FileFormat;
-    use crate::database::table::{SaveMode, Table, TableResult};
+    use crate::database::table::{SaveMode, Table};
     use std::path::Path;
 
     fn write_test_table(table_name: &str) {
@@ -46,12 +46,11 @@ mod tests {
             "annual_salary".to_string(),
             "final_grade".to_string(),
         ];
-        let load_result = Table::load(table_name.to_string(), select_columns);
-        if let TableResult::Success(table) = load_result {
-            // TODO: check table here
-        } else {
-            println!("{:?}", load_result);
-            panic!("Error!");
-        }
+        let load_result = Table::load(
+            table_name.to_string(),
+            select_columns,
+            FileFormat::SimpleColumnar,
+        );
+        load_result.unwrap();
     }
 }

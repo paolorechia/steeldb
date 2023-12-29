@@ -1,6 +1,6 @@
 use crate::database::config::{DATA_DIR, DEFAULT_TABLE};
 use crate::database::datatypes::DataType;
-use crate::database::file_io::{ColumnarWriter, FileFormat, Writer};
+use crate::database::file_io::{ColumnarReader, ColumnarWriter, FileFormat, Reader, Writer};
 use std::collections::HashMap;
 use std::fs::OpenOptions;
 use std::path::Path;
@@ -18,14 +18,8 @@ pub enum TableErrors {
     TableNotFound,
     TableAlreadyExists,
     WriteError(String),
+    ReadError(String),
     Error(String),
-}
-
-#[derive(Debug)]
-pub enum TableResult {
-    Success(Table),
-    LoadError(String),
-    ColumnNotFound(String),
 }
 
 pub enum SaveMode {
@@ -45,8 +39,14 @@ impl Table {
         }
     }
 
+    pub fn get_table_path(name: &String, format: &FileFormat) -> String {
+        match format {
+            FileFormat::SimpleColumnar => format!("{}/{}.columnar", DATA_DIR, name),
+        }
+    }
+
     pub fn save(&self, mode: SaveMode, format: FileFormat) -> Result<(), TableErrors> {
-        let s = format!("{}/{}.columnar", DATA_DIR, self.name);
+        let s = Table::get_table_path(&self.name, &format);
         let path = Path::new(&s);
 
         // Pick up correct writer
@@ -91,27 +91,42 @@ impl Table {
         return Ok(());
     }
 
-    pub fn load(table_name: String, select_columns: Vec<String>) -> TableResult {
+    pub fn load(
+        table_name: String,
+        select_columns: Vec<String>,
+        format: FileFormat,
+    ) -> Result<Table, TableErrors> {
         // hardcoded table
         if table_name == DEFAULT_TABLE {
             let table_result = Table::load_test_table(table_name, select_columns);
             let table = table_result.unwrap();
-            return TableResult::Success(table);
-        } else {
-            // for now return an empty table
-            let mut table = Table {
-                name: table_name,
-                fields: HashMap::<String, DataType>::new(),
-                columns: HashMap::<String, Vec<DataType>>::new(),
-                select_columns: select_columns,
-            };
-            for column in table.select_columns.iter() {
-                table
-                    .fields
-                    .insert(column.clone(), DataType::String(column.clone()));
-            }
-            return TableResult::Success(table);
+            return Ok(table);
         }
+
+        let s = Table::get_table_path(&table_name, &format);
+        let path = Path::new(&s);
+
+        let reader: Box<dyn Reader>;
+        match format {
+            FileFormat::SimpleColumnar => reader = ColumnarReader::new(),
+        };
+
+        let file_ = OpenOptions::new().read(true).open(path);
+        if file_.is_err() {
+            let error = format!("{:?}", file_.unwrap_err());
+            println!("{:?}", error);
+            return Err(TableErrors::TableNotFound);
+        }
+        let f = file_.unwrap();
+        let (fields, columns) = reader.read(f, select_columns.clone());
+
+        let table = Table {
+            name: table_name,
+            fields,
+            columns,
+            select_columns,
+        };
+        return Ok(table);
     }
 
     // Used for testing only

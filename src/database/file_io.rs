@@ -1,7 +1,7 @@
 use crate::database::datatypes::DataType;
 use std::collections::HashMap;
 use std::fs::File;
-use std::io::Write;
+use std::io::{Read, Write};
 
 // Enums
 pub enum FileFormat {
@@ -25,7 +25,11 @@ pub trait Writer {
 }
 
 pub trait Reader {
-    fn read(&self, fields: &HashMap<String, DataType>, file_: File);
+    fn read(
+        &self,
+        file_: File,
+        select_columns: Vec<String>,
+    ) -> (HashMap<String, DataType>, HashMap<String, Vec<DataType>>);
 }
 
 // Writer Implementations
@@ -116,10 +120,26 @@ impl ColumnarWriter {
 // Reader Implementations
 pub struct ColumnarReader {}
 impl ColumnarReader {
-    pub fn new() -> ColumnarReader {
-        return ColumnarReader {};
+    pub fn new() -> Box<ColumnarReader> {
+        return Box::new(ColumnarReader {});
     }
 }
 impl Reader for ColumnarReader {
-    fn read(&self, fields: &HashMap<String, DataType>, file_: File) {}
+    fn read(
+        &self,
+        mut file_: File,
+        select_columns: Vec<String>,
+    ) -> (HashMap<String, DataType>, HashMap<String, Vec<DataType>>) {
+        // Prepare return output
+        let mut fields = HashMap::<String, DataType>::new();
+        let mut columns = HashMap::<String, Vec<DataType>>::new();
+
+        // Read file
+        let mut buffer = String::new();
+        let mut result = file_.read_to_string(&mut buffer);
+        let lines = buffer.split("\n");
+
+        // TODO: Should update output with file contents here
+        return (fields, columns);
+    }
 }

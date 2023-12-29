@@ -1,5 +1,6 @@
 use crate::database::command::{Command, CommandResult};
-use crate::database::table::{Table, TableResult};
+use crate::database::file_io::FileFormat;
+use crate::database::table::Table;
 
 pub struct VirtualMachine {}
 
@@ -18,17 +19,16 @@ impl VirtualMachine {
         // this assumes the parser built a list of commands in the right order of execution
         for command in commands {
             if let Command::SelectFrom(columns, table_name) = command {
-                let table_result = Table::load(table_name, columns);
+                let table_result = Table::load(table_name, columns, FileFormat::SimpleColumnar);
 
-                // if our command succeeds, we want to save the result in case the next command needs it
-                if let TableResult::Success(table) = table_result {
+                // if we found an error, we want to immediately abort the nested execution
+                if table_result.is_err() {
+                    let error = format!("{:?}", table_result.unwrap_err());
+                    return CommandResult::Error(error);
+                } else {
+                    // if our command succeeds, we want to save the result in case the next command needs it
+                    let table = table_result.unwrap();
                     maybe_command_result = Some(CommandResult::RetrievedDataSuccess(table));
-
-                // otherwise, if we found an error, we want to immediately abort the nested execution
-                } else if let TableResult::LoadError(error) = table_result {
-                    return CommandResult::Error(error);
-                } else if let TableResult::ColumnNotFound(error) = table_result {
-                    return CommandResult::Error(error);
                 }
             } else if let Command::Stub = command {
                 return CommandResult::VoidSuccess;
