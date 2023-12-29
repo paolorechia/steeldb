@@ -98,9 +98,7 @@ impl Table {
     ) -> Result<Table, TableErrors> {
         // hardcoded table
         if table_name == DEFAULT_TABLE {
-            let table_result = Table::load_test_table(table_name, select_columns);
-            let table = table_result.unwrap();
-            return Ok(table);
+            return Table::load_test_table(table_name, select_columns);
         }
 
         let s = Table::get_table_path(&table_name, &format);
