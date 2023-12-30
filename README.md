@@ -145,11 +145,14 @@ Our roadmap for the first iteration might end up looking like this:
    * Make REPL support both backends: Standalone process or network server
 2. Adds proper logging strategy to the server []
 3. Add configuration file []
-4. Add create table command []
-5. Add drop table command []
-6. Add alter table command []
-7. Multiple tables query support (add FROM clause support) []
-8. Support filters (add basic WHERE clause support) []
+4. Add proper documentation to project []
+5. Add create table command []
+6. Add drop table command []
+7. Add alter table command []
+8. Multiple tables query support (add FROM clause support) []
+9. Support filters (add basic WHERE clause support) []
+10. Add proper documentation to project []
+11. Update Cargo.toml
 
 
 
