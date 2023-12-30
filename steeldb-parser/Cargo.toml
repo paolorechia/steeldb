@@ -2,6 +2,8 @@
 name = "steeldb-parser"
 version = "0.1.0"
 edition = "2021"
+description = "SQL parser for SteelDB"
+license = "Apache-2.0"
 
 [dependencies]
 lalrpop-util = { version = "0.20.0", features = ["lexer", "unicode"] }
