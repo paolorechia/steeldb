@@ -5,6 +5,10 @@ pub enum DataType {
     Float32(f32),
 }
 
+pub enum Unknown {
+    Wrapped(DataType),
+}
+
 impl DataType {
     pub fn name(&self) -> String {
         match self {
