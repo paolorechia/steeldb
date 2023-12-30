@@ -51,7 +51,7 @@ Our roadmap for the first iteration might end up looking like this:
 13. Clean up []
     * Handle select columns properly in read method
     * Test that everything is working as expected
-    * Tag v1.0, publish to cargo?
+    * Tag v1.0
 
 
 ### Second iteration: making it usable (v0.2.0)
