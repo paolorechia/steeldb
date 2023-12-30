@@ -121,7 +121,6 @@ impl Table {
         }
 
         let (fields, columns) = result.unwrap();
-        println!("{:?}", fields);
         for select_col in select_columns.iter() {
             if !fields.contains_key(select_col) {
                 return Err(TableErrors::ColumnNotFound(select_col.clone()));
