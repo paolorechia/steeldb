@@ -1,4 +1,4 @@
-use crate::database::config::{DATA_DIR, DEFAULT_TABLE};
+use crate::database::config::DATA_DIR;
 use crate::database::datatypes::DataType;
 use crate::database::file_io::{ColumnarReader, ColumnarWriter, FileFormat, Reader, Writer};
 use std::collections::HashMap;
@@ -96,11 +96,6 @@ impl Table {
         select_columns: Vec<String>,
         format: FileFormat,
     ) -> Result<Table, TableErrors> {
-        // hardcoded table
-        if table_name == DEFAULT_TABLE {
-            return Table::load_test_table(table_name, select_columns);
-        }
-
         let s = Table::get_table_path(&table_name, &format);
         let path = Path::new(&s);
 

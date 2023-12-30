@@ -134,7 +134,7 @@ impl Repl {
                 }
             }
             println!("|");
-            self.print_separator_line(table.select_columns.len() as i32, names_length)
+            // self.print_separator_line(table.select_columns.len() as i32, names_length)
         }
     }
 
@@ -182,6 +182,8 @@ impl Repl {
         if !is_empty {
             self.print_table_columns(&table, number_rows, column_widths, names_length);
         }
+        self.print_separator_line(number_columns, names_length);
+
         io::stdout().flush().unwrap();
     }
 
