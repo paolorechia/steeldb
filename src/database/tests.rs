@@ -99,4 +99,17 @@ mod tests {
             assert!(m);
         }
     }
+
+    #[test]
+    fn test_column_not_found() {
+        let table_name = "test_column_not_found";
+        write_test_table(&table_name);
+        let select_columns = vec!["durp".to_string()];
+        let load_result = Table::load(
+            table_name.to_string(),
+            select_columns,
+            FileFormat::SimpleColumnar,
+        );
+        assert!(load_result.is_err());
+    }
 }

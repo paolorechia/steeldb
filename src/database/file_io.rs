@@ -203,7 +203,6 @@ impl Reader for ColumnarReader {
         }
         let (mut field_name, mut field_type, mut field_number_of_elements) = result.unwrap();
 
-        // collect elements
         // Start collecting at third line (zero-indexed)
         let mut line = 2;
 
@@ -215,44 +214,48 @@ impl Reader for ColumnarReader {
                 return Err(ReadError::InvalidFileSize);
             }
 
-            let dtype: DataType;
-            if field_type == "i32" {
-                dtype = DataType::Integer32(0);
-            } else if field_type == "f32" {
-                dtype = DataType::Float32(0.0);
-            } else {
-                dtype = DataType::String(field_name.to_string());
+            // collect data only if requested
+            if select_columns.contains(&field_name) {
+                let dtype: DataType;
+                if field_type == "i32" {
+                    dtype = DataType::Integer32(0);
+                } else if field_type == "f32" {
+                    dtype = DataType::Float32(0.0);
+                } else {
+                    dtype = DataType::String(field_name.to_string());
+                }
+
+                fields.insert(field_name.to_string(), dtype);
+                columns.insert(field_name.to_string(), vec![]);
+                let column = columns.get_mut(&field_name).unwrap();
+                for i in line..block_end {
+                    let line = lines.get(i as usize).unwrap();
+                    let val: DataType;
+                    if field_type == "i32" {
+                        let result = line.parse::<i32>();
+                        if result.is_err() {
+                            return Err(ReadError::FieldParseError(format!(
+                                "Failed to read integer at line {}",
+                                i
+                            )));
+                        }
+                        val = DataType::Integer32(result.unwrap());
+                    } else if field_type == "f32" {
+                        let result = line.parse::<f32>();
+                        if result.is_err() {
+                            return Err(ReadError::FieldParseError(format!(
+                                "Failed to read integer at line {}",
+                                i
+                            )));
+                        }
+                        val = DataType::Float32(result.unwrap());
+                    } else {
+                        val = DataType::String(line.to_string());
+                    }
+                    column.push(val);
+                }
             }
 
-            fields.insert(field_name.to_string(), dtype);
-            columns.insert(field_name.to_string(), vec![]);
-            let column = columns.get_mut(&field_name).unwrap();
-            for i in line..block_end {
-                let line = lines.get(i as usize).unwrap();
-                let val: DataType;
-                if field_type == "i32" {
-                    let result = line.parse::<i32>();
-                    if result.is_err() {
-                        return Err(ReadError::FieldParseError(format!(
-                            "Failed to read integer at line {}",
-                            i
-                        )));
-                    }
-                    val = DataType::Integer32(result.unwrap());
-                } else if field_type == "f32" {
-                    let result = line.parse::<f32>();
-                    if result.is_err() {
-                        return Err(ReadError::FieldParseError(format!(
-                            "Failed to read integer at line {}",
-                            i
-                        )));
-                    }
-                    val = DataType::Float32(result.unwrap());
-                } else {
-                    val = DataType::String(line.to_string());
-                }
-                column.push(val);
-            }
             line = block_end;
             if line >= lines.len() as i32 {
                 // reached EOF
@@ -272,6 +275,7 @@ impl Reader for ColumnarReader {
             // Prepare to read data
             line += 1;
         }
+
         return Ok((fields, columns));
     }
 }

@@ -17,6 +17,7 @@ pub struct Table {
 pub enum TableErrors {
     TableNotFound,
     TableAlreadyExists,
+    ColumnNotFound(String),
     WriteError(String),
     ReadError(String),
     Error(String),
@@ -120,7 +121,12 @@ impl Table {
         }
 
         let (fields, columns) = result.unwrap();
-
+        println!("{:?}", fields);
+        for select_col in select_columns.iter() {
+            if !fields.contains_key(select_col) {
+                return Err(TableErrors::ColumnNotFound(select_col.clone()));
+            }
+        }
         let table = Table {
             name: table_name,
             fields,

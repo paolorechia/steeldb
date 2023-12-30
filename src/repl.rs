@@ -76,7 +76,6 @@ impl Repl {
         table: &Table,
         number_rows: i32,
         column_widths: HashMap<String, i32>,
-        names_length: i32,
     ) {
         for i in 0..number_rows {
             print!("|");
@@ -134,7 +133,6 @@ impl Repl {
                 }
             }
             println!("|");
-            // self.print_separator_line(table.select_columns.len() as i32, names_length)
         }
     }
 
@@ -180,7 +178,7 @@ impl Repl {
         self.print_separator_line(number_columns, names_length);
 
         if !is_empty {
-            self.print_table_columns(&table, number_rows, column_widths, names_length);
+            self.print_table_columns(&table, number_rows, column_widths);
         }
         self.print_separator_line(number_columns, names_length);
 
