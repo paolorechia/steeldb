@@ -2,6 +2,91 @@
 
 This is a study repository. This is mostly for personal use. Building a Database from scratch in Rust. Why not? :)
 
+# Current version documentation: v0.1.0
+
+## How to use this version
+
+Should be as simple:
+
+```
+cargo add steeldb
+cargo run
+```
+
+This should start a REPL:
+
+```
+------------------------------------------------
+|                                               |
+|   SteelDB                                     |
+|   version: 0.1.0                              |
+|                                               |
+------------------------------------------------
+
+Type 'exit;' to leave this shell
+Current supported commands: [select]
+
+>>
+```
+The only implemented clause is select, which selects columns of a previously constructed table.
+For example:
+
+```
+>> select name, annual_salary;
+|---------------------------------|
+|    name   |    annual_salary    |
+|---------------------------------|
+| John Man  |       60000         |
+|   Lenon   |       200000        |
+|   Mary    |      3012000        |
+|---------------------------------|
+>>
+```
+
+Commands should always add with a `;`.
+
+If you simply try the command above, you will instead see:
+
+```
+>> select name;
+"Os { code: 2, kind: NotFound, message: \"No such file or directory\" }"
+
+
+<------------------ COMMAND FAILED ------------------>
+"TableNotFound"
+
+<---------------------------------------------------->
+
+>> 
+```
+
+This is because the table must be pre-created. You can either create one using `cargo test` and copying it,
+or copying and pasting this into the file `.steeldb/data/test_table.columnar`: 
+
+```txt
+TABLE COLUMNAR FORMAT HEADER
+Field name: final_grade; Type: f32; Number of elements: 3
+4.0
+3.2
+5
+Field name: name; Type: String; Number of elements: 3
+John Man
+Lenon
+Mary
+Field name: annual_salary; Type: i32; Number of elements: 3
+60000
+200000
+3012000
+
+```
+
+### Columnar Format
+As you can see, the table format is very naive and verbose. It stores data in ASCII.
+It's not meant to be efficient and will probably be replaced in the future.
+
+
+# More info
+
 ## Useful Links:
 1. https://cstack.github.io/db_tutorial/parts/part1.html
 2. https://www.sqlite.org/arch.html
