@@ -206,7 +206,7 @@ impl Reader for ColumnarReader {
         // Start collecting at third line (zero-indexed)
         let mut line = 2;
 
-        // insert loop here
+        // read loop here
         while line < lines.len() as i32 {
             let block_end = field_number_of_elements + line;
 
