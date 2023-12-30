@@ -47,7 +47,11 @@ Our roadmap for the first iteration might end up looking like this:
 9. A hardcoded table for testing [x]
 10. Proper error propagation [x]
 11. Pretty printing of table in REPL [x]
-12. A serialization / desserialization method to write/read data from file []
+12. A serialization / desserialization method to write/read data from file [x]
+13. Clean up []
+    * Handle select columns properly in read method
+    * Test that everything is working as expected
+    * Tag v1.0, publish to cargo?
 
 
 ### Second iteration: making it usable (v0.2.0)
