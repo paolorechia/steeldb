@@ -70,7 +70,7 @@ mod tests {
         }
 
         let name_column = table.columns.get("annual_salary").unwrap();
-        let matches: Vec<bool> = vec![60000, 200000, 3000]
+        let matches: Vec<bool> = vec![60000, 200000, 30000]
             .iter()
             .zip(name_column.iter())
             .map(|(left, right)| -> bool {

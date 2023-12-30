@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{Read, Write};
 
+const COLUMNAR_HEADER: [u8; 29] = *b"TABLE COLUMNAR FORMAT HEADER\n";
+
 // Enums
 pub enum FileFormat {
     SimpleColumnar,
@@ -61,7 +63,7 @@ impl Writer for ColumnarWriter {
         for (key, value) in fields.iter() {
             let column = columns.get(key).unwrap();
             let s = format!(
-                "Field name: {:?}; Type: {:?}; Number of elements: {:?}\n",
+                "Field name: {}; Type: {}; Number of elements: {}\n",
                 key,
                 value.name(),
                 column.len()
@@ -112,10 +114,9 @@ impl ColumnarReader {
         return Box::new(ColumnarReader {});
     }
 
-    fn read_metadata(line: &str, line_number: i32) -> Result<(&str, &str, i32), ReadError> {
+    fn read_metadata(line: &str, line_number: i32) -> Result<(String, String, i32), ReadError> {
         // "Field name: {:?}; Type: {:?}; Number of elements: {:?}\n",
         let field_meta: Vec<&str> = line.split(";").collect();
-        println!("Field_meta: {:?}", field_meta);
         // Basic check
         if field_meta.len() != 3 {
             let s = format!(
@@ -157,7 +158,7 @@ impl ColumnarReader {
             )));
         }
 
-        let field_type = type_split.get(1).unwrap();
+        let field_type = type_split.get(1).unwrap().replace(" ", "");
 
         // collect field name
         let name_split: Vec<&str> = field_meta.get(0).unwrap().split(":").collect();
@@ -166,7 +167,7 @@ impl ColumnarReader {
                 "Could not split meta 'name'".to_string(),
             ));
         }
-        let field_name = type_split.get(1).unwrap();
+        let field_name = name_split.get(1).unwrap().replace(" ", "");
 
         return Ok((field_name, field_type, field_number_of_elements));
     }
@@ -208,7 +209,6 @@ impl Reader for ColumnarReader {
 
         // insert loop here
         while line < lines.len() as i32 {
-            println!("On line of: {:?} / {:?}", line, lines.len());
             let block_end = field_number_of_elements + line;
 
             if (lines.len() as i32) < block_end {
@@ -226,7 +226,7 @@ impl Reader for ColumnarReader {
 
             fields.insert(field_name.to_string(), dtype);
             columns.insert(field_name.to_string(), vec![]);
-            let column = columns.get_mut(field_name).unwrap();
+            let column = columns.get_mut(&field_name).unwrap();
             for i in line..block_end {
                 let line = lines.get(i as usize).unwrap();
                 let val: DataType;
@@ -258,8 +258,13 @@ impl Reader for ColumnarReader {
                 // reached EOF
                 break;
             }
+            let unwrapped_line = lines.get(line as usize).unwrap();
+            if unwrapped_line.len() == 0 {
+                break;
+            }
+
             // Read next field metadata
-            let result = ColumnarReader::read_metadata(lines.get(line as usize).unwrap(), line);
+            let result = ColumnarReader::read_metadata(&unwrapped_line, line);
             if result.is_err() {
                 return Err(result.unwrap_err());
             }
