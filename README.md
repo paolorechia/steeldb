@@ -4,6 +4,11 @@ This is a study repository. This is mostly for personal use. Building a Database
 
 # Current version documentation: v0.1.0
 
+## Architecture
+![image](https://github.com/paolorechia/steeldb/assets/5386983/198ad119-3231-44ea-97c5-0c4542a6e457)
+
+
+
 ## How to use this version
 
 Should be as simple:
