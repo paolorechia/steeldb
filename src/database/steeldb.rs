@@ -1,3 +1,5 @@
+//! The entrypoint module of the database. Defines an embbeddeable Database.
+//! In the future, it might also define the database as Server/Client.
 use crate::database::command::CommandResult;
 use crate::database::parser::{parse, ParseError};
 use crate::database::table::Table;

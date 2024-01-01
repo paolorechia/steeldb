@@ -1,3 +1,4 @@
+//! This module defines structs / methods to save/read data to/from disk.
 use crate::database::datatypes::DataType;
 use std::collections::HashMap;
 use std::fs::File;

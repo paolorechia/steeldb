@@ -1,3 +1,4 @@
+//! In memory data representations.
 use crate::database::config::DATA_DIR;
 use crate::database::datatypes::DataType;
 use crate::database::file_io::{ColumnarReader, ColumnarWriter, FileFormat, Reader, Writer};

@@ -1,3 +1,5 @@
+//! The module for defining data types supported by the Database.
+
 /// The supported data type stored by the Database.
 /// By using the Enum, we can resolve the column type dynamically in run time.
 #[derive(Debug, Clone)]

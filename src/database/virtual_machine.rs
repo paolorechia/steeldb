@@ -1,14 +1,19 @@
+//! VirtualMachine that takes parsed interpreted as commands and executes them.
+//! This effectively maps the Parser output into an actual code.
 use crate::database::command::{Command, CommandResult};
 use crate::database::file_io::FileFormat;
 use crate::database::table::Table;
 
+/// For now, an empty struct, but could be extended.
 pub struct VirtualMachine {}
 
 impl VirtualMachine {
+    /// Class constructor
     pub fn new() -> VirtualMachine {
         return VirtualMachine {};
     }
 
+    /// Main entry point, executes a vector of [Command] type, in the order given.
     pub fn execute(&self, commands: Vec<Command>) -> CommandResult {
         // keep track of last command execution
         // might be useful when implementing nested commands

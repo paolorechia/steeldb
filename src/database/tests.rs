@@ -1,3 +1,4 @@
+//! Database unit tests
 #[cfg(test)]
 mod tests {
     use crate::database::config::DATA_DIR;
