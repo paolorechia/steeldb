@@ -6,6 +6,8 @@ use crate::database::virtual_machine::VirtualMachine;
 /// The main struct exposed by the crate.
 /// See the crate root documentation on how to use it.
 pub struct SteelDB {
+    /// The VirtualMachine that executes parsed commands.
+    /// It should not be used directly by an end user.
     virtual_machine: VirtualMachine,
 }
 
