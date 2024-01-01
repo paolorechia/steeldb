@@ -18,8 +18,8 @@ pub struct Table {
     pub fields: HashMap<String, DataType>,
     /// The actual data stored in columnar format.
     pub columns: HashMap<String, Vec<DataType>>,
-    /// Used retrieving data, allowing for projection push-down on query.
-    /// That is, the Database do not columns that were not specified in the query.  
+    /// Used when retrieving data, allowing for projection push-down on query.
+    /// That is, the Database do not read columns that were not specified in the query.  
     pub select_columns: Vec<String>,
 }
 
