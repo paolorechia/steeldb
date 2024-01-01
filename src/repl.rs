@@ -1,3 +1,6 @@
+//! This crate defines a useful REPL to issue query commands interactively with SteelDB
+//! It's not meant to be  
+
 use crate::database::datatypes::DataType;
 use crate::database::steeldb::{ExecutionResult, SteelDB};
 use crate::database::table::Table;

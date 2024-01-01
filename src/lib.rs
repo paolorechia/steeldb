@@ -14,8 +14,8 @@
 //!
 //! There are two main ways of using it:
 //!
-//! 1. Using the [database] module directly.
-//! 2. Using the [repl] for an interactive experience.
+//! 1. Using the [SteelDB] struct for a programmatic experience.
+//! 2. Using the [Repl] struct for an interactive experience.
 //!
 //! Note that the current version is extremely limited, as it only supports the SELECT clause.
 //! # Examples
@@ -53,8 +53,8 @@
 //! When the shell starts, one provides input which will be fed into the `execute` function of the [SteelDB] struct.
 //! The REPL automatically handles pretty printing tables and printing errors back to the standard output.
 
-pub mod database;
-pub mod repl;
+mod database;
+mod repl;
 
 pub use database::steeldb::SteelDB;
 pub use repl::Repl;
