@@ -20,6 +20,8 @@ pub struct Repl {
 }
 
 impl Repl {
+    /// The REPL constructor. Currently not customizable, but could be extended
+    /// to read options / configuration.
     pub fn new() -> Repl {
         return Repl {
             buffer: String::new(),
@@ -30,6 +32,7 @@ impl Repl {
         };
     }
 
+    /// Prints the Database banner when the REPL starts.
     fn print_banner(&self) {
         println!("------------------------------------------------");
         println!("|                                               |");
@@ -43,12 +46,14 @@ impl Repl {
         println!("");
     }
 
+    /// Prints the available help.
     fn print_help(&self) {
         println!("Type 'exit;' to leave this shell");
         println!("Current supported commands: [select]");
         println!("");
     }
 
+    /// Prints the table header (types/schema).
     fn print_table_fields(&self, column_names: &Vec<String>) -> HashMap<String, i32> {
         let mut column_widths = HashMap::<String, i32>::new();
         print!("|");
@@ -76,6 +81,7 @@ impl Repl {
         return column_widths;
     }
 
+    /// Prints the table data in columnar format.
     fn print_table_columns(
         &self,
         table: &Table,
@@ -141,6 +147,7 @@ impl Repl {
         }
     }
 
+    /// Prints a line separator in the format `|------|`.
     fn print_separator_line(&self, number_columns: i32, names_length: i32) {
         let size = self.padding * 2 * number_columns + names_length;
         print!("|");
@@ -150,6 +157,7 @@ impl Repl {
         println!("|");
     }
 
+    /// Prints a table into a pretty format to the standard output.
     fn print_table(&self, table: &Table) {
         let number_columns = table.select_columns.len() as i32;
         let mut is_empty = false;
@@ -190,6 +198,7 @@ impl Repl {
         io::stdout().flush().unwrap();
     }
 
+    /// The main loop (literally, the REPL).
     pub fn main_loop(&mut self) {
         self.print_banner();
         self.print_help();
