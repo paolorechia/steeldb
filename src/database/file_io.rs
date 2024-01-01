@@ -10,7 +10,25 @@ const COLUMNAR_HEADER: [u8; 29] = *b"TABLE COLUMNAR FORMAT HEADER\n";
 // Enums
 /// Defines the supported file formats by the Database
 pub enum FileFormat {
-    /// The only supported file for now is the SimpleColumnar, which is a naive ASCII format
+    /// The only supported file for now is the SimpleColumnar, which is a naive ASCII format.
+    /// Here is an example of this format:
+    /// ```txt
+    /// TABLE COLUMNAR FORMAT HEADER
+    /// Field name: final_grade; Type: f32; Number of elements: 3
+    /// 4.0
+    /// 3.2
+    /// 5
+    /// Field name: name; Type: String; Number of elements: 3
+    /// John Man
+    /// Lenon
+    /// Mary
+    /// Field name: annual_salary; Type: i32; Number of elements: 3
+    /// 60000
+    /// 200000
+    /// 3012000
+    ///
+    /// ```
+    /// Notice that the newline at the end is not optional.
     SimpleColumnar,
 }
 
