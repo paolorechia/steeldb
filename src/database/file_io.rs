@@ -7,18 +7,23 @@ use std::io::{Read, Write};
 const COLUMNAR_HEADER: [u8; 29] = *b"TABLE COLUMNAR FORMAT HEADER\n";
 
 // Enums
+/// Defines the supported file formats by the Database
 pub enum FileFormat {
+    /// The only supported file for now is the SimpleColumnar, which is a naive ASCII format
     SimpleColumnar,
 }
 
 // Traits
+/// The public interface of a table Writer. Used for dynamic dispatching in runtime.
 pub trait Writer {
+    /// Write table to disk.
     fn write(
         &self,
         fields: &HashMap<String, DataType>,
         columns: &HashMap<String, Vec<DataType>>,
         file_: File,
     ) -> Result<usize, std::io::Error>;
+    /// Append data to disk.
     fn append(
         &self,
         fields: &HashMap<String, DataType>,
@@ -27,14 +32,21 @@ pub trait Writer {
     ) -> Result<usize, std::io::Error>;
 }
 
+/// The errors that might happen when reading a table from disk.
+/// This implicitly defines errors for ColumnarFormat only.
 #[derive(Debug)]
 pub enum ReadError {
+    /// The table has an invalid size.
+    /// This can happen if columns have different sizes or if the file was incorrectly saved / corrupted / modified.
     InvalidFileSize,
+    /// Found a line that should contain field meta data, but does not comply to the expected format.
     InvalidFieldMeta(String),
+    /// Could not parse a data type.
     FieldParseError(String),
+    /// Generic fallback standard I/O error.
     StdIoError(std::io::Error),
 }
-
+/// The public interface of a table Reader. Used for dynamic dispatching in runtime.
 pub trait Reader {
     fn read(
         &self,
@@ -44,9 +56,18 @@ pub trait Reader {
 }
 
 // Writer Implementations
+/// The writer for the SimpleColumnar format.
 pub struct ColumnarWriter {}
 
+impl ColumnarWriter {
+    /// Constructor wraps into a Box to allow dynamic dispatching in runtime.
+    pub fn new() -> Box<ColumnarWriter> {
+        return Box::new(ColumnarWriter {});
+    }
+}
+
 impl Writer for ColumnarWriter {
+    /// Write table to disk in columnar format.
     fn write(
         &self,
         fields: &HashMap<String, DataType>,
@@ -92,6 +113,7 @@ impl Writer for ColumnarWriter {
 
         return Ok(written_bytes);
     }
+    /// Not implemented. Should append data to the columnar format.
     fn append(
         &self,
         fields: &HashMap<String, DataType>,
@@ -102,19 +124,15 @@ impl Writer for ColumnarWriter {
     }
 }
 
-impl ColumnarWriter {
-    pub fn new() -> Box<ColumnarWriter> {
-        return Box::new(ColumnarWriter {});
-    }
-}
-
 // Reader Implementations
+/// The reader for the SimpleColumnar format.
 pub struct ColumnarReader {}
 impl ColumnarReader {
+    /// Constructor wraps into a Box to allow dynamic dispatching in runtime.
     pub fn new() -> Box<ColumnarReader> {
         return Box::new(ColumnarReader {});
     }
-
+    /// Read a line from disk that should contain field metadata.
     fn read_metadata(line: &str, line_number: i32) -> Result<(String, String, i32), ReadError> {
         // "Field name: {:?}; Type: {:?}; Number of elements: {:?}\n",
         let field_meta: Vec<&str> = line.split(";").collect();
@@ -175,6 +193,7 @@ impl ColumnarReader {
 }
 
 impl Reader for ColumnarReader {
+    /// The SimpleColumnar reader method.
     fn read(
         &self,
         mut file_: File,
