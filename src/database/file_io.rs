@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{Read, Write};
 
+/// Defines the string 'TABLE COLUMNAR FORMAT HEADER\n' that goes to the top of the columnar file.
 const COLUMNAR_HEADER: [u8; 29] = *b"TABLE COLUMNAR FORMAT HEADER\n";
 
 // Enums
