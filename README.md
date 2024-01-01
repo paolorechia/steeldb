@@ -5,7 +5,7 @@ This is a study repository. This is mostly for personal use. Building a Database
 *Source code*: https://github.com/paolorechia/steeldb/
 
 # Current version documentation: latest
-*Database: https://docs.rs/steeldb/latest/steeldb_parser/ (empty)
+*Database: https://docs.rs/steeldb/latest/steeldb
 *Parser: https://docs.rs/steeldb-parser/latest/steeldb_parser/
 
 ## Architecture
