@@ -1,5 +1,5 @@
-//! This crate defines a useful REPL to issue query commands interactively with SteelDB
-//! It's not meant to be  
+//! This crate defines a useful REPL to issue query commands interactively with SteelDB.
+//! It's a private module and not meant to be imported directly.
 
 use crate::database::datatypes::DataType;
 use crate::database::steeldb::{ExecutionResult, SteelDB};
@@ -9,6 +9,8 @@ use std::collections::HashMap;
 use std::io;
 use std::io::Write;
 
+/// The main struct that is publicly exposed by this module Repl.
+/// See example in the root crate on how to use it.
 pub struct Repl {
     buffer: String,
     previous_lines: Vec<String>,

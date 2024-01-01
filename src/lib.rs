@@ -56,7 +56,10 @@
 mod database;
 mod repl;
 
-pub use database::steeldb::SteelDB;
+pub use database::config;
+pub use database::datatypes::DataType;
+pub use database::steeldb::{ExecutionResult, SteelDB};
+pub use database::table::Table;
 pub use repl::Repl;
 
 /// Crate version defined in `Cargo.toml` file, retrieved at runtime.
