@@ -5,7 +5,7 @@ edition = "2021"
 description = "SQL parser for SteelDB"
 license = "Apache-2.0"
 repository = "https://github.com/paolorechia/steeldb/tree/main/steeldb-parser"
-authors = "paolorechia"
+authors = ["Paolo Rechia"]
 
 [dependencies]
 lalrpop-util = { version = "0.20.0", features = ["lexer", "unicode"] }
