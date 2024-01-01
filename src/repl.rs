@@ -214,7 +214,7 @@ impl Repl {
                     .execute(self.previous_lines.join(" ").to_lowercase());
 
                 match execution_result {
-                    ExecutionResult::VoidOK() => {
+                    ExecutionResult::VoidOK => {
                         println!("OK!");
                     }
                     ExecutionResult::TableResult(table) => {

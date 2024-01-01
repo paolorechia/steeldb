@@ -3,14 +3,22 @@ use crate::database::parser::{parse, ParseError};
 use crate::database::table::Table;
 use crate::database::virtual_machine::VirtualMachine;
 
+/// The main struct exposed by the crate.
+/// See the crate root documentation on how to use it.
 pub struct SteelDB {
     virtual_machine: VirtualMachine,
 }
 
+/// The return type given by the [SteelDB::execute] function.
 pub enum ExecutionResult {
+    /// A result where a table was successfully computed/retrieved, and is available for inspection.
     TableResult(Table),
-    VoidOK(),
+    /// A result where a command was successfully executed, but with no output.
+    VoidOK,
+    /// Parse error. The given input string was not valid for the parser.
     ParseError(String),
+    /// Command error. Something went wrong when executing the command.
+    /// Examples include `ColumnNotFound`, `TableNotFound` etc.
     CommandError(String),
 }
 
@@ -31,7 +39,7 @@ impl SteelDB {
                     CommandResult::RetrievedDataSuccess(table) => {
                         return ExecutionResult::TableResult(table);
                     }
-                    CommandResult::VoidSuccess => return ExecutionResult::VoidOK(),
+                    CommandResult::VoidSuccess => return ExecutionResult::VoidOK,
                     CommandResult::Error(error) => {
                         return ExecutionResult::CommandError(error);
                     }
