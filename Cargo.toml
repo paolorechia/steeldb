@@ -9,4 +9,4 @@ authors = ["Paolo Rechia"]
 
 [dependencies]
 lalrpop-util = { version = "0.20.0", features = ["lexer", "unicode"] }
-steeldb-parser = { path = "steeldb-parser", version = "0.1.2" }
+steeldb-parser = { path = "steeldb-parser" }
