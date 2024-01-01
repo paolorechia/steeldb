@@ -3,8 +3,64 @@ mod tests {
     use crate::database::config::DATA_DIR;
     use crate::database::datatypes::DataType;
     use crate::database::file_io::FileFormat;
-    use crate::database::table::{SaveMode, Table};
+    use crate::database::table::{SaveMode, Table, TableErrors};
+    use std::collections::HashMap;
     use std::path::Path;
+
+    pub fn load_test_table(
+        table_name: String,
+        select_columns: Vec<String>,
+    ) -> Result<Table, TableErrors> {
+        let mut fields = HashMap::<String, DataType>::new();
+        fields.insert("name".to_string(), DataType::String("name".to_string()));
+        fields.insert("annual_salary".to_string(), DataType::Integer32(0));
+        fields.insert("final_grade".to_string(), DataType::Float32(0.0));
+
+        let mut columns = HashMap::<String, Vec<DataType>>::new();
+
+        let mut name_column = Vec::<DataType>::new();
+        let mut annual_salary_column = Vec::<DataType>::new();
+        let mut final_grade_column = Vec::<DataType>::new();
+
+        name_column.push(DataType::String("John".to_string()));
+        name_column.push(DataType::String("Lenon".to_string()));
+        name_column.push(DataType::String("Mary".to_string()));
+
+        annual_salary_column.push(DataType::Integer32(60000));
+        annual_salary_column.push(DataType::Integer32(200000));
+        annual_salary_column.push(DataType::Integer32(30000));
+
+        final_grade_column.push(DataType::Float32(4.0));
+        final_grade_column.push(DataType::Float32(3.0));
+        final_grade_column.push(DataType::Float32(5.0));
+
+        columns.insert("name".to_string(), name_column);
+        columns.insert("annual_salary".to_string(), annual_salary_column);
+        columns.insert("final_grade".to_string(), final_grade_column);
+
+        let mut test_table = Table {
+            name: table_name,
+            fields: fields,
+            columns: columns,
+            select_columns: select_columns,
+        };
+
+        let mut returned_columns = HashMap::<String, Vec<DataType>>::new();
+        for column_name in test_table.select_columns.iter() {
+            if !test_table.fields.contains_key(column_name) {
+                return Err(TableErrors::ColumnNotFound(column_name.clone()));
+            }
+            let retrieved_column = test_table.columns.get(column_name);
+            match retrieved_column {
+                Some(col) => {
+                    returned_columns.insert(column_name.clone(), col.to_owned());
+                }
+                None => return Err(TableErrors::ColumnNotFound(column_name.clone())),
+            }
+        }
+        test_table.columns = returned_columns;
+        return Ok(test_table);
+    }
 
     fn write_test_table(table_name: &str) {
         Table::init_data_dir();
@@ -27,7 +83,7 @@ mod tests {
             "annual_salary".to_string(),
             "final_grade".to_string(),
         ];
-        let table_result = Table::load_test_table(table_name.to_string(), select_columns);
+        let table_result = load_test_table(table_name.to_string(), select_columns);
         let table = table_result.unwrap();
         let save_result = table.save(SaveMode::Overwrite, FileFormat::SimpleColumnar);
         save_result.unwrap();

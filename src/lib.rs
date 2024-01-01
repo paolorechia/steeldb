@@ -21,18 +21,18 @@
 //! # Examples
 //! ### Database API
 //!
-//! ```rust
-//! use steeldb::SteelDB;
+//! ```no_run
+//! use steeldb::{SteelDB, ExecutionResult};
 //!
-//! let database = SteelDB::new();
-//! let result = database.execute("select name");
+//! let mut database = SteelDB::new();
+//! let result = database.execute("select name".to_string());
 //! match result {
-//!     TableResult(table) => {
+//!     ExecutionResult::TableResult(table) => {
 //!         println!("{:?}", table);
 //!     }
-//!     VoidOK => println("Command OK"),
-//!     ParseError(error) => println("Parse error: {:?}", error),
-//!     CommandError(error) => println("Command error: {:?}", error),
+//!     ExecutionResult::VoidOK => println!("Command OK"),
+//!     ExecutionResult::ParseError(error) => println!("Parse error: {:?}", error),
+//!     ExecutionResult::CommandError(error) => println!("Command error: {:?}", error),
 //! }
 //! ```
 //!
@@ -40,7 +40,7 @@
 //! To use the REPL, one can simply install SteelDB and execute `cargo run`.
 //! Effectively, this is the same as:
 //!  
-//!```rust
+//!```no_run
 //!use steeldb::Repl;
 //!
 //!fn main() {
