@@ -1,6 +1,6 @@
 [package]
 name = "steeldb-parser"
-version = "0.2.0-dev"
+version = "0.1.1"
 edition = "2021"
 description = "SQL parser for SteelDB"
 license = "Apache-2.0"
