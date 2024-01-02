@@ -2,7 +2,7 @@
 use crate::database::config::DATA_DIR;
 use crate::database::datatypes::DataType;
 use crate::database::file_io::{ColumnarReader, ColumnarWriter, FileFormat, Reader, Writer};
-use log::{error, info};
+use log::info;
 use std::collections::HashMap;
 use std::fs::OpenOptions;
 use std::path::Path;
@@ -45,7 +45,8 @@ pub enum TableErrors {
 
 /// Defines how the table should be saved.
 /// This is a low level API and not meant to used directly
-/// by database users.  
+/// by database users.
+#[derive(Debug)]
 pub enum SaveMode {
     Overwrite,
     Append,
@@ -67,9 +68,12 @@ impl Table {
     }
     /// Saves the table to disk.
     pub fn save(&self, mode: SaveMode, format: FileFormat) -> Result<(), TableErrors> {
-        info!("Saving table in format {:?}", format);
         let s = Table::get_table_path(&self.name, &format);
         let path = Path::new(&s);
+        info!(
+            "Saving table in format {:?} ({:?}) to path: {:?}",
+            format, mode, path
+        );
 
         // Pick up correct writer
         let writer: Box<dyn Writer>;
@@ -120,6 +124,7 @@ impl Table {
     ) -> Result<Table, TableErrors> {
         let s = Table::get_table_path(&table_name, &format);
         let path = Path::new(&s);
+        info!("Loading table in format {:?} from path: {:?}", format, path);
 
         let reader: Box<dyn Reader>;
         match format {
