@@ -1,9 +1,11 @@
 //! The entrypoint module of the database. Defines an embbeddeable Database.
 //! In the future, it might also define the database as Server/Client.
 use crate::database::command::CommandResult;
+use crate::database::logger::logger_init;
 use crate::database::parser::{parse, ParseError};
 use crate::database::table::Table;
 use crate::database::virtual_machine::VirtualMachine;
+use log::info;
 
 /// The main struct exposed by the crate.
 /// See the crate root documentation on how to use it.
@@ -28,6 +30,8 @@ pub enum ExecutionResult {
 
 impl SteelDB {
     pub fn new() -> SteelDB {
+        logger_init();
+        info!("SteelDB log initialized");
         return SteelDB {
             virtual_machine: VirtualMachine::new(),
         };

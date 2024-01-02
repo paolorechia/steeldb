@@ -6,6 +6,7 @@ mod command;
 pub mod config;
 pub mod datatypes;
 mod file_io;
+mod logger;
 mod parser;
 pub mod steeldb;
 pub mod table;
