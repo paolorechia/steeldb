@@ -153,10 +153,10 @@ Our roadmap for the first iteration might end up looking like this:
 
 ### Second iteration: making it usable (v0.2.0)
 1. Add proper documentation to project [x]
-2. Add another API besides the REPL to query the database []
+2. Adds proper logging strategy to the server []
+3. Add another API besides the REPL to query the database []
    * This can be either a traditional TCP or a HTTP server. It should be as simple as possible, and just receive a string of the SQL command
    * Make REPL support both backends: Standalone process or network server
-3. Adds proper logging strategy to the server []
 4. Add configuration file []
 5. Add create table command []
 6. Add drop table command []
