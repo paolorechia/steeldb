@@ -5,7 +5,7 @@ use crate::database::logger::logger_init;
 use crate::database::parser::{parse, ParseError};
 use crate::database::table::Table;
 use crate::database::virtual_machine::VirtualMachine;
-use log::info;
+use log::{error, info};
 
 /// The main struct exposed by the crate.
 /// See the crate root documentation on how to use it.
@@ -29,6 +29,7 @@ pub enum ExecutionResult {
 }
 
 impl SteelDB {
+    /// SteelDB constructor, should be called to initialize logger and virtual machine.
     pub fn new() -> SteelDB {
         logger_init();
         info!("SteelDB log initialized");
@@ -36,7 +37,9 @@ impl SteelDB {
             virtual_machine: VirtualMachine::new(),
         };
     }
+    /// Entrypoint to execute a SQL query.
     pub fn execute(&mut self, user_input: String) -> ExecutionResult {
+        info!("Executing user input: {}", user_input);
         let result = parse(user_input);
         match result {
             Ok(commands) => {
@@ -45,16 +48,22 @@ impl SteelDB {
                 // we do not want to make the outer layer import any enum except ExecutionResult
                 match command_result {
                     CommandResult::RetrievedDataSuccess(table) => {
+                        info!("Retrieved data successfully");
                         return ExecutionResult::TableResult(table);
                     }
-                    CommandResult::VoidSuccess => return ExecutionResult::VoidOK,
+                    CommandResult::VoidSuccess => {
+                        info!("Command successful");
+                        return ExecutionResult::VoidOK;
+                    }
                     CommandResult::Error(error) => {
+                        error!("Command failed: {:?}", error);
                         return ExecutionResult::CommandError(error);
                     }
                 }
             }
             // translate ParseError into ExecutionResult
             Err(ParseError::Error(error)) => {
+                error!("Parse error: {:?}", error);
                 return ExecutionResult::ParseError(error);
             }
         }

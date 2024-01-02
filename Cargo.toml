@@ -8,5 +8,7 @@ repository = "https://github.com/paolorechia/steeldb"
 authors = ["Paolo Rechia"]
 
 [dependencies]
+env_logger = { version = "0.10.1", features = ["color"] }
 lalrpop-util = { version = "0.20.0", features = ["lexer", "unicode"] }
+log = "0.4.20"
 steeldb-parser = { path = "steeldb-parser" }
