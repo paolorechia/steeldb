@@ -2,6 +2,7 @@
 use crate::database::config::DATA_DIR;
 use crate::database::datatypes::DataType;
 use crate::database::file_io::{ColumnarReader, ColumnarWriter, FileFormat, Reader, Writer};
+use log::{error, info};
 use std::collections::HashMap;
 use std::fs::OpenOptions;
 use std::path::Path;
@@ -66,6 +67,7 @@ impl Table {
     }
     /// Saves the table to disk.
     pub fn save(&self, mode: SaveMode, format: FileFormat) -> Result<(), TableErrors> {
+        info!("Saving table in format {:?}", format);
         let s = Table::get_table_path(&self.name, &format);
         let path = Path::new(&s);
 

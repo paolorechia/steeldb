@@ -9,6 +9,7 @@ const COLUMNAR_HEADER: [u8; 29] = *b"TABLE COLUMNAR FORMAT HEADER\n";
 
 // Enums
 /// Defines the supported file formats by the Database
+#[derive(Debug)]
 pub enum FileFormat {
     /// The only supported file for now is the SimpleColumnar, which is a naive ASCII format.
     /// Here is an example of this format:
