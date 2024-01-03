@@ -18,4 +18,6 @@ hyper-util = { version = "0.1", features = ["full"], optional = true}
 
 [features]
 default = ["database"]
-database = ["dep:steeldb-parser"]
+database = []
+client = ["dep:hyper", "dep:tokio", "dep:http-body-util", "dep:hyper-util"]
+server = ["dep:hyper", "dep:tokio", "dep:http-body-util", "dep:hyper-util", "dep:steeldb-parser"]
