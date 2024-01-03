@@ -8,7 +8,14 @@ repository = "https://github.com/paolorechia/steeldb"
 authors = ["Paolo Rechia"]
 
 [dependencies]
-env_logger = { version = "0.10.1", features = ["color"] }
-lalrpop-util = { version = "0.20.0", features = ["lexer", "unicode"] }
 log = "0.4.20"
-steeldb-parser = { path = "steeldb-parser" }
+env_logger = { version = "0.10.1", features = ["color"] }
+steeldb-parser = { path = "steeldb-parser", optional = true }
+hyper = { version = "1", features = ["full"],  optional = true}
+tokio = { version = "1", features = ["full"],  optional = true}
+http-body-util = {version = "0.1",  optional = true}
+hyper-util = { version = "0.1", features = ["full"], optional = true}
+
+[features]
+default = ["database"]
+database = ["dep:steeldb-parser"]

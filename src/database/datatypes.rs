@@ -4,8 +4,12 @@
 /// By using the Enum, we can resolve the column type dynamically in run time.
 #[derive(Debug, Clone)]
 pub enum DataType {
+    /// Default String type. For now does not impose a length limit.
+    /// This might change in the future.
     String(String),
+    /// Wrapper for primitive i32.
     Integer32(i32),
+    /// Wrapper for primitive f32.
     Float32(f32),
 }
 
