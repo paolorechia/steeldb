@@ -9,6 +9,9 @@ mod logger;
 pub mod table;
 
 #[cfg(feature = "database")]
+mod table_impl;
+
+#[cfg(feature = "database")]
 mod command;
 
 #[cfg(feature = "database")]
