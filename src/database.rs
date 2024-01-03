@@ -31,3 +31,6 @@ mod tests;
 
 #[cfg(feature = "database")]
 mod virtual_machine;
+
+#[cfg(feature = "server")]
+pub mod server;
