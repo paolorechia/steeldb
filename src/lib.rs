@@ -55,13 +55,12 @@
 //! The REPL automatically handles pretty printing tables and printing errors back to the standard output.
 
 mod database;
-mod repl;
 
 pub use database::config;
 pub use database::datatypes::DataType;
+pub use database::repl::Repl;
 pub use database::steeldb::{ExecutionResult, SteelDB};
 pub use database::table::Table;
-pub use repl::Repl;
 
 /// Crate version defined in `Cargo.toml` file, retrieved at runtime.
 /// This is displayed in the REPL.

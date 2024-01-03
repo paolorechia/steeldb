@@ -18,10 +18,16 @@ mod command;
 pub mod config;
 
 #[cfg(feature = "database")]
+pub mod console_printer;
+
+#[cfg(feature = "database")]
 mod file_io;
 
 #[cfg(feature = "database")]
 mod parser;
+
+#[cfg(feature = "database")]
+pub mod repl;
 
 #[cfg(feature = "database")]
 pub mod steeldb;

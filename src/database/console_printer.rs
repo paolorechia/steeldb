@@ -1,39 +1,19 @@
-//! This crate defines a useful REPL to issue query commands interactively with SteelDB.
-//! It's a private module and not meant to be imported directly.
-
 use crate::database::datatypes::DataType;
-use crate::database::steeldb::{ExecutionResult, SteelDB};
 use crate::database::table::Table;
 use crate::VERSION;
 use std::collections::HashMap;
 use std::io;
 use std::io::Write;
 
-/// The main struct that is publicly exposed by this module Repl.
-/// See example in the root crate on how to use it.
-pub struct Repl {
-    buffer: String,
-    previous_lines: Vec<String>,
-    database: SteelDB,
-    is_in_multiline: bool,
+pub struct ConsolePrinter {
     padding: i32,
 }
-
-impl Repl {
-    /// The REPL constructor. Currently not customizable, but could be extended
-    /// to read options / configuration.
-    pub fn new() -> Repl {
-        return Repl {
-            buffer: String::new(),
-            previous_lines: Vec::<String>::new(),
-            database: SteelDB::new(),
-            is_in_multiline: false,
-            padding: 4,
-        };
+impl ConsolePrinter {
+    pub fn new(padding: i32) -> ConsolePrinter {
+        return ConsolePrinter { padding };
     }
-
     /// Prints the Database banner when the REPL starts.
-    fn print_banner(&self) {
+    pub fn print_banner(&self) {
         println!("------------------------------------------------");
         println!("|                                               |");
         println!("|   SteelDB                                     |");
@@ -47,14 +27,14 @@ impl Repl {
     }
 
     /// Prints the available help.
-    fn print_help(&self) {
+    pub fn print_help(&self) {
         println!("Type 'exit;' to leave this shell");
         println!("Current supported commands: [select]");
         println!("");
     }
 
     /// Prints the table header (types/schema).
-    fn print_table_fields(&self, column_names: &Vec<String>) -> HashMap<String, i32> {
+    pub fn print_table_fields(&self, column_names: &Vec<String>) -> HashMap<String, i32> {
         let mut column_widths = HashMap::<String, i32>::new();
         print!("|");
         for i in 0..column_names.len() as i32 {
@@ -82,7 +62,7 @@ impl Repl {
     }
 
     /// Prints the table data in columnar format.
-    fn print_table_columns(
+    pub fn print_table_columns(
         &self,
         table: &Table,
         number_rows: i32,
@@ -148,7 +128,7 @@ impl Repl {
     }
 
     /// Prints a line separator in the format `|------|`.
-    fn print_separator_line(&self, number_columns: i32, names_length: i32) {
+    pub fn print_separator_line(&self, number_columns: i32, names_length: i32) {
         let size = self.padding * 2 * number_columns + names_length;
         print!("|");
         for _ in 0..size {
@@ -158,7 +138,7 @@ impl Repl {
     }
 
     /// Prints a table into a pretty format to the standard output.
-    fn print_table(&self, table: &Table) {
+    pub fn print_table(&self, table: &Table) {
         let number_columns = table.select_columns.len() as i32;
         let mut is_empty = false;
         let mut names_length: i32 = 0;
@@ -196,67 +176,5 @@ impl Repl {
         self.print_separator_line(number_columns, names_length);
 
         io::stdout().flush().unwrap();
-    }
-
-    /// The main loop (literally, the REPL).
-    pub fn main_loop(&mut self) {
-        self.print_banner();
-        self.print_help();
-        loop {
-            if self.is_in_multiline {
-                print!("| ");
-            } else {
-                print!(">> ");
-            }
-            io::stdout().flush().unwrap();
-
-            io::stdin().read_line(&mut self.buffer).unwrap();
-            self.previous_lines.push(self.buffer.clone());
-            // Command ended
-            if self.buffer.contains(";") {
-                if self.buffer.contains("exit") {
-                    break;
-                }
-                self.is_in_multiline = false;
-                let execution_result = self
-                    .database
-                    .execute(self.previous_lines.join(" ").to_lowercase());
-
-                match execution_result {
-                    ExecutionResult::VoidOK => {
-                        println!("OK!");
-                    }
-                    ExecutionResult::TableResult(table) => {
-                        self.print_table(&table);
-                    }
-                    ExecutionResult::ParseError(error) => {
-                        println!("");
-                        println!("");
-                        println!("<------------------- PARSE ERROR ------------------->");
-                        println!("{:?}", error);
-                        println!("");
-                        println!("Please check your input");
-                        println!("<--------------------------------------------------->");
-                        println!("");
-                    }
-                    ExecutionResult::CommandError(error) => {
-                        println!("");
-                        println!("");
-                        println!("<------------------ COMMAND FAILED ------------------>");
-                        println!("{:?}", error);
-                        println!("");
-                        println!("<---------------------------------------------------->");
-                        println!("");
-                    }
-                }
-                self.buffer.clear();
-                self.previous_lines.clear();
-            }
-            // Multine line command, keep reading
-            else {
-                self.is_in_multiline = true;
-                self.buffer.clear();
-            }
-        }
     }
 }
