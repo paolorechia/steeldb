@@ -1,8 +1,8 @@
 //! This crate defines a useful REPL to issue query commands interactively with SteelDB.
 //! It's a private module and not meant to be imported directly.
 
-use crate::database::console_printer::ConsolePrinter;
-use crate::database::steeldb::{ExecutionResult, SteelDB};
+use crate::console_printer::ConsolePrinter;
+use crate::{ExecutionResult, SteelDBInterface};
 use std::io;
 use std::io::Write;
 
@@ -11,7 +11,7 @@ use std::io::Write;
 pub struct Repl {
     buffer: String,
     previous_lines: Vec<String>,
-    database: SteelDB,
+    database: SteelDBInterface,
     is_in_multiline: bool,
     console: ConsolePrinter,
 }
@@ -23,7 +23,7 @@ impl Repl {
         return Repl {
             buffer: String::new(),
             previous_lines: Vec::<String>::new(),
-            database: SteelDB::new(),
+            database: SteelDBInterface::new(),
             is_in_multiline: false,
             console: ConsolePrinter::new(4),
         };

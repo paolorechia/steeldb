@@ -111,7 +111,7 @@ mod tests {
         );
         let table = load_result.unwrap();
 
-        let name_column = table.columns.get("name").unwrap();
+        let name_column = table.get_columns().get("name").unwrap();
         let matches: Vec<bool> = vec!["John", "Lenon", "Mary"]
             .iter()
             .zip(name_column.iter())
@@ -126,7 +126,7 @@ mod tests {
             assert!(m);
         }
 
-        let name_column = table.columns.get("annual_salary").unwrap();
+        let name_column = table.get_columns().get("annual_salary").unwrap();
         let matches: Vec<bool> = vec![60000, 200000, 30000]
             .iter()
             .zip(name_column.iter())
@@ -141,7 +141,7 @@ mod tests {
             assert!(m);
         }
 
-        let name_column = table.columns.get("final_grade").unwrap();
+        let name_column = table.get_columns().get("final_grade").unwrap();
         let matches: Vec<bool> = vec![4.0, 3.0, 5.0]
             .iter()
             .zip(name_column.iter())

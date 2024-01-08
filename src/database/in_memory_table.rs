@@ -50,6 +50,12 @@ impl InMemoryTable {
 }
 
 impl Table for InMemoryTable {
+    fn get_table_name(&self) -> String {
+        return self.name.clone();
+    }
+    fn get_columns(&self) -> &HashMap<String, Vec<DataType>> {
+        return &self.columns;
+    }
     /// Saves the table to disk.
     fn save(&self, mode: SaveMode, format: FileFormat) -> Result<(), TableErrors> {
         let s = InMemoryTable::get_table_path(&self.name, &format);

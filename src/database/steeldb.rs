@@ -36,7 +36,7 @@ impl SteelDB {
                 match command_result {
                     CommandResult::RetrievedDataSuccess(table) => {
                         info!("Retrieved data successfully");
-                        return ExecutionResult::TableResult(Box::new(table));
+                        return ExecutionResult::TableResult(table);
                     }
                     CommandResult::VoidSuccess => {
                         info!("Command successful");

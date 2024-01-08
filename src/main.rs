@@ -1,4 +1,4 @@
-use steeldb::Repl;
+use steeldb_core::Repl;
 
 fn main() {
     let mut repl = Repl::new();

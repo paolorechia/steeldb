@@ -1,5 +1,7 @@
 //! Public interface of table.
 
+use crate::DataType;
+use std::collections::HashMap;
 
 // Enums
 /// Defines the supported file formats by the Database
@@ -35,7 +37,19 @@ pub trait Table {
         select_columns: Vec<String>,
         format: FileFormat,
     ) -> Result<Box<dyn Table>, TableErrors>;
+    fn get_table_name(&self) -> String;
+    fn get_columns(&self) -> &HashMap<String, Vec<DataType>>;
 }
+
+use core::fmt::Debug;
+impl Debug for dyn Table {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        let table_name = self.get_table_name();
+        write!(f, "Table<{:?} ", table_name)
+    }
+}
+
+
 
 /// The return type given by the [SteelDB::execute] function.
 pub enum ExecutionResult {
