@@ -13,7 +13,12 @@ This is a study repository. This is mostly for personal use. Building a Database
 **Iteration 1**: https://medium.com/@paolorechia/building-a-database-from-scratch-in-rust-part-1-6dfef2223673
 
 ## Architecture
+
+### Embedded (Standalone Server)
 ![image](https://github.com/paolorechia/steeldb/assets/5386983/198ad119-3231-44ea-97c5-0c4542a6e457)
+
+### Client-Server Crate Architecture / Dependencies
+![image](https://github.com/paolorechia/steeldb/assets/5386983/8a3a8b7a-f58a-4322-9c80-490eeafc3927)
 
 
 ## How to use this version
