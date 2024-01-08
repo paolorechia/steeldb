@@ -2,16 +2,16 @@
 #[cfg(test)]
 mod tests {
     use crate::database::config::DATA_DIR;
-    use crate::database::datatypes::DataType;
-    use crate::database::file_io::FileFormat;
-    use crate::database::table::{SaveMode, Table, TableErrors};
+    use crate::database::in_memory_table::InMemoryTable;
     use std::collections::HashMap;
     use std::path::Path;
+    use steeldb_core::DataType;
+    use steeldb_core::{FileFormat, SaveMode, Table, TableErrors};
 
     pub fn load_test_table(
         table_name: String,
         select_columns: Vec<String>,
-    ) -> Result<Table, TableErrors> {
+    ) -> Result<InMemoryTable, TableErrors> {
         let mut fields = HashMap::<String, DataType>::new();
         fields.insert("name".to_string(), DataType::String("name".to_string()));
         fields.insert("annual_salary".to_string(), DataType::Integer32(0));
@@ -39,7 +39,7 @@ mod tests {
         columns.insert("annual_salary".to_string(), annual_salary_column);
         columns.insert("final_grade".to_string(), final_grade_column);
 
-        let mut test_table = Table {
+        let mut test_table = InMemoryTable {
             name: table_name,
             fields: fields,
             columns: columns,
@@ -64,7 +64,7 @@ mod tests {
     }
 
     fn write_test_table(table_name: &str) {
-        Table::init_data_dir();
+        InMemoryTable::init_data_dir();
         let mut filename = table_name.to_string();
         filename.push_str(".columnar");
 
@@ -104,7 +104,7 @@ mod tests {
             "annual_salary".to_string(),
             "final_grade".to_string(),
         ];
-        let load_result = Table::load(
+        let load_result = InMemoryTable::new().load(
             table_name.to_string(),
             select_columns,
             FileFormat::SimpleColumnar,
@@ -162,7 +162,7 @@ mod tests {
         let table_name = "test_column_not_found";
         write_test_table(&table_name);
         let select_columns = vec!["durp".to_string()];
-        let load_result = Table::load(
+        let load_result = InMemoryTable::new().load(
             table_name.to_string(),
             select_columns,
             FileFormat::SimpleColumnar,

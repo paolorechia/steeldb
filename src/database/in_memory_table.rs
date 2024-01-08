@@ -1,12 +1,31 @@
 //! In memory data representations.
 use crate::database::config::DATA_DIR;
-use crate::database::file_io::{ColumnarReader, ColumnarWriter, FileFormat, Reader, Writer};
-use crate::database::table::{SaveMode, Table, TableErrors};
+use crate::database::file_io::{ColumnarReader, ColumnarWriter, Reader, Writer};
 use log::info;
+use std::collections::HashMap;
 use std::fs::OpenOptions;
 use std::path::Path;
+use steeldb_core::{DataType, FileFormat, SaveMode, Table, TableErrors};
 
-impl Table {
+/// This defines a way to keep the data in-memory by the SteelDB.
+/// It also represents the Table that the user receives back when querying the database.
+/// This is currently in a columnar format.
+/// Most of the exposed functionality here is a low level API meant to be used during the
+/// database development. It is not meant to be used directly by database users.
+#[derive(Debug)]
+pub struct InMemoryTable {
+    /// The table name, this is used as an identifier for retrieving the correct table.
+    pub name: String,
+    /// The table fields or schema.
+    pub fields: HashMap<String, DataType>,
+    /// The actual data stored in columnar format.
+    pub columns: HashMap<String, Vec<DataType>>,
+    /// Used when retrieving data, allowing for projection push-down on query.
+    /// That is, the Database do not read columns that were not specified in the query.  
+    pub select_columns: Vec<String>,
+}
+
+impl InMemoryTable {
     /// Creates the data dir if it does not yet exist.
     pub fn init_data_dir() {
         if !Path::new(DATA_DIR).exists() {
@@ -20,9 +39,20 @@ impl Table {
             FileFormat::SimpleColumnar => format!("{}/{}.columnar", DATA_DIR, name),
         }
     }
+    pub fn new() -> InMemoryTable {
+        InMemoryTable {
+            name: String::new(),
+            fields: HashMap::<String, DataType>::new(),
+            columns: HashMap::<String, Vec<DataType>>::new(),
+            select_columns: Vec::<String>::new(),
+        }
+    }
+}
+
+impl Table for InMemoryTable {
     /// Saves the table to disk.
-    pub fn save(&self, mode: SaveMode, format: FileFormat) -> Result<(), TableErrors> {
-        let s = Table::get_table_path(&self.name, &format);
+    fn save(&self, mode: SaveMode, format: FileFormat) -> Result<(), TableErrors> {
+        let s = InMemoryTable::get_table_path(&self.name, &format);
         let path = Path::new(&s);
         info!(
             "Saving table in format {:?} ({:?}) to path: {:?}",
@@ -71,12 +101,13 @@ impl Table {
         return Ok(());
     }
     /// Loads the table from disk.
-    pub fn load(
+    fn load(
+        &self,
         table_name: String,
         select_columns: Vec<String>,
         format: FileFormat,
-    ) -> Result<Table, TableErrors> {
-        let s = Table::get_table_path(&table_name, &format);
+    ) -> Result<Box<dyn Table>, TableErrors> {
+        let s = InMemoryTable::get_table_path(&table_name, &format);
         let path = Path::new(&s);
         info!("Loading table in format {:?} from path: {:?}", format, path);
 
@@ -106,12 +137,12 @@ impl Table {
                 return Err(TableErrors::ColumnNotFound(select_col.clone()));
             }
         }
-        let table = Table {
+        let table = InMemoryTable {
             name: table_name,
             fields,
             columns,
             select_columns,
         };
-        return Ok(table);
+        return Ok(Box::new(table));
     }
 }

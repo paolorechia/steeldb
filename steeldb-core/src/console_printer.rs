@@ -1,5 +1,5 @@
-use crate::database::datatypes::DataType;
-use crate::database::table::Table;
+use steeldb_core::DataType;
+use steeldb_core::Table;
 use crate::VERSION;
 use std::collections::HashMap;
 use std::io;

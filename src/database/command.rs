@@ -1,5 +1,5 @@
 //! Defines commands that the VirtualMachine may execute.
-use crate::database::table::Table;
+use crate::database::in_memory_table::InMemoryTable;
 
 /// All known commands are defined in this enum.
 pub enum Command {
@@ -12,7 +12,7 @@ pub enum Command {
 /// Defines possible results from a command execution.
 pub enum CommandResult {
     /// Command returned a table.
-    RetrievedDataSuccess(Table),
+    RetrievedDataSuccess(InMemoryTable),
     /// Command failed by an unexpected reason.
     Error(String),
     /// Command succeded but has no output.

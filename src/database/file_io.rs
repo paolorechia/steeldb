@@ -1,37 +1,11 @@
 //! This module defines structs / methods to save/read data to/from disk.
-use crate::database::datatypes::DataType;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{Read, Write};
+use steeldb_core::DataType;
 
 /// Defines the string 'TABLE COLUMNAR FORMAT HEADER\n' that goes to the top of the columnar file.
 const COLUMNAR_HEADER: [u8; 29] = *b"TABLE COLUMNAR FORMAT HEADER\n";
-
-// Enums
-/// Defines the supported file formats by the Database
-#[derive(Debug)]
-pub enum FileFormat {
-    /// The only supported file for now is the SimpleColumnar, which is a naive ASCII format.
-    /// Here is an example of this format:
-    /// ```txt
-    /// TABLE COLUMNAR FORMAT HEADER
-    /// Field name: final_grade; Type: f32; Number of elements: 3
-    /// 4.0
-    /// 3.2
-    /// 5
-    /// Field name: name; Type: String; Number of elements: 3
-    /// John Man
-    /// Lenon
-    /// Mary
-    /// Field name: annual_salary; Type: i32; Number of elements: 3
-    /// 60000
-    /// 200000
-    /// 3012000
-    ///
-    /// ```
-    /// Notice that the newline at the end is not optional.
-    SimpleColumnar,
-}
 
 // Traits
 /// The public interface of a table Writer. Used for dynamic dispatching in runtime.

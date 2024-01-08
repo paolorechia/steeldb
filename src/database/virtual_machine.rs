@@ -1,8 +1,9 @@
 //! VirtualMachine that takes parsed interpreted as commands and executes them.
 //! This effectively maps the Parser output into an actual code.
 use crate::database::command::{Command, CommandResult};
-use crate::database::file_io::FileFormat;
-use crate::database::table::Table;
+use crate::database::in_memory_table::InMemoryTable;
+use steeldb_core::FileFormat;
+use steeldb_core::Table;
 
 /// For now, an empty struct, but could be extended.
 pub struct VirtualMachine {}
@@ -24,7 +25,8 @@ impl VirtualMachine {
         // this assumes the parser built a list of commands in the right order of execution
         for command in commands {
             if let Command::SelectFrom(columns, table_name) = command {
-                let table_result = Table::load(table_name, columns, FileFormat::SimpleColumnar);
+                let table_result =
+                    InMemoryTable::new().load(table_name, columns, FileFormat::SimpleColumnar);
 
                 // if we found an error, we want to immediately abort the nested execution
                 if table_result.is_err() {
