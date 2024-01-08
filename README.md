@@ -163,8 +163,6 @@ Our roadmap for the first iteration might end up looking like this:
 7. Add alter table command []
 8. Multiple tables query support (add FROM clause support) []
 9. Support filters (add basic WHERE clause support) []
-10. Add proper documentation to project []
-11. Update Cargo.toml
 
 
 
