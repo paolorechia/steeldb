@@ -1,3 +1,4 @@
+use serde::{Deserialize, Serialize};
 use std::convert::Infallible;
 use std::net::SocketAddr;
 
@@ -9,8 +10,23 @@ use hyper::{Request, Response};
 use hyper_util::rt::TokioIo;
 use tokio::net::TcpListener;
 
+#[derive(Deserialize, Serialize, Debug)]
+struct HelloJSON {
+    hello: String,
+}
+
 async fn hello(_: Request<hyper::body::Incoming>) -> Result<Response<Full<Bytes>>, Infallible> {
-    Ok(Response::new(Full::new(Bytes::from("Hello, World!"))))
+    let hello_response = HelloJSON {
+        hello: "world!".to_owned(),
+    };
+    let desserialized = serde_json::to_string(&hello_response).unwrap();
+    let response = Response::builder()
+        .header("Content-Type", "application/json")
+        .header("content-length", desserialized.len())
+        .body(desserialized.into())
+        .unwrap();
+
+    Ok(response)
 }
 
 #[tokio::main]
