@@ -40,6 +40,8 @@ pub trait Table {
     fn get_table_name(&self) -> String;
     fn get_columns(&self) -> &HashMap<String, Vec<DataType>>;
     fn get_select_columns(&self) -> &Vec<String>;
+    fn move_columns(self) -> HashMap<String, Vec<DataType>>;
+    fn move_select_columns(self) -> Vec<String>;
 }
 
 use core::fmt::Debug;

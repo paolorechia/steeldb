@@ -2,6 +2,7 @@
 
 /// The supported data type stored by the Database.
 /// By using the Enum, we can resolve the column type dynamically in run time.
+#[cfg(not(feature = "json"))]
 #[derive(Debug, Clone)]
 pub enum DataType {
     /// Default String type. For now does not impose a length limit.
@@ -12,6 +13,23 @@ pub enum DataType {
     /// Wrapper for primitive f32.
     Float32(f32),
 }
+
+#[cfg(feature = "json")]
+use serde::{Deserialize, Serialize};
+
+#[cfg(feature = "json")]
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum DataType {
+    /// Default String type. For now does not impose a length limit.
+    /// This might change in the future.
+    String(String),
+    /// Wrapper for primitive i32.
+    Integer32(i32),
+    /// Wrapper for primitive f32.
+    Float32(f32),
+}
+
+
 
 impl DataType {
     /// Although a public function, this will rarely have an utility
