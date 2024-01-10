@@ -59,7 +59,3 @@ mod database;
 pub use database::config;
 pub use database::steeldb::SteelDB;
 pub use steeldb_core::{DataType, Table};
-
-/// Crate version defined in `Cargo.toml` file, retrieved at runtime.
-/// This is displayed in the REPL.
-pub const VERSION: &str = env!("CARGO_PKG_VERSION");

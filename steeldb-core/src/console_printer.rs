@@ -1,5 +1,5 @@
-use steeldb_core::DataType;
-use steeldb_core::Table;
+use crate::DataType;
+use crate::Table;
 use crate::VERSION;
 use std::collections::HashMap;
 use std::io;
@@ -64,15 +64,15 @@ impl ConsolePrinter {
     /// Prints the table data in columnar format.
     pub fn print_table_columns(
         &self,
-        table: &Table,
+        table: Box<dyn Table>,
         number_rows: i32,
         column_widths: HashMap<String, i32>,
     ) {
         for i in 0..number_rows {
             print!("|");
-            for j in 0..table.select_columns.len() as i32 {
-                let col_name = table.select_columns.get(j as usize).unwrap();
-                let col = table.columns.get(col_name).unwrap();
+            for j in 0..table.get_select_columns().len() as i32 {
+                let col_name = table.get_select_columns().get(j as usize).unwrap();
+                let col = table.get_columns().get(col_name).unwrap();
 
                 let maybe_value = col.get(i as usize);
                 let size_of_value: i32;
@@ -117,7 +117,7 @@ impl ConsolePrinter {
                     print!(" ");
                 }
 
-                if j < table.select_columns.len() as i32 - 1 {
+                if j < table.get_select_columns().len() as i32 - 1 {
                     print!("|");
                 } else {
                     print!(" ");
@@ -138,19 +138,19 @@ impl ConsolePrinter {
     }
 
     /// Prints a table into a pretty format to the standard output.
-    pub fn print_table(&self, table: &Table) {
-        let number_columns = table.select_columns.len() as i32;
+    pub fn print_table(&self, table: Box<dyn Table>) {
+        let number_columns = table.get_select_columns().len() as i32;
         let mut is_empty = false;
         let mut names_length: i32 = 0;
         let mut number_rows: i32 = 0;
 
-        let mut columns_iter = table.columns.iter();
+        let mut columns_iter = table.get_columns().iter();
         let maybe_column = columns_iter.next();
 
         // get number of rows from first column
         match maybe_column {
             Some((key, _)) => {
-                let col = table.columns.get(key);
+                let col = table.get_columns().get(key);
                 if let Some(vec) = col {
                     number_rows = vec.len() as i32;
                 }
@@ -161,17 +161,17 @@ impl ConsolePrinter {
         };
 
         // iterate over all columns
-        for name in table.select_columns.iter() {
+        for name in table.get_select_columns().iter() {
             names_length += name.len() as i32;
         }
 
         self.print_separator_line(number_columns, names_length);
 
-        let column_widths = self.print_table_fields(&table.select_columns);
+        let column_widths = self.print_table_fields(&table.get_select_columns());
         self.print_separator_line(number_columns, names_length);
 
         if !is_empty {
-            self.print_table_columns(&table, number_rows, column_widths);
+            self.print_table_columns(table, number_rows, column_widths);
         }
         self.print_separator_line(number_columns, names_length);
 

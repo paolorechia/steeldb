@@ -56,6 +56,9 @@ impl Table for InMemoryTable {
     fn get_columns(&self) -> &HashMap<String, Vec<DataType>> {
         return &self.columns;
     }
+    fn get_select_columns(&self) -> &Vec<String> {
+        return &self.select_columns;
+    }
     /// Saves the table to disk.
     fn save(&self, mode: SaveMode, format: FileFormat) -> Result<(), TableErrors> {
         let s = InMemoryTable::get_table_path(&self.name, &format);

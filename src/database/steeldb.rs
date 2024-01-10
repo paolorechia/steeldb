@@ -5,7 +5,7 @@ use crate::database::logger::logger_init;
 use crate::database::parser::{parse, ParseError};
 use crate::database::virtual_machine::VirtualMachine;
 use log::{error, info};
-use steeldb_core::ExecutionResult;
+use steeldb_core::{ExecutionResult, SteelDBInterface};
 
 /// The main struct exposed by the crate.
 /// See the crate root documentation on how to use it.
@@ -24,8 +24,10 @@ impl SteelDB {
             virtual_machine: VirtualMachine::new(),
         };
     }
+}
+impl SteelDBInterface for SteelDB {
     /// Entrypoint to execute a SQL query.
-    pub fn execute(&mut self, user_input: String) -> ExecutionResult {
+    fn execute(&mut self, user_input: String) -> ExecutionResult {
         info!("Executing user input: {}", user_input);
         let result = parse(user_input);
         match result {

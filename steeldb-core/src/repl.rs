@@ -11,7 +11,7 @@ use std::io::Write;
 pub struct Repl {
     buffer: String,
     previous_lines: Vec<String>,
-    database: SteelDBInterface,
+    database: Box<dyn SteelDBInterface>,
     is_in_multiline: bool,
     console: ConsolePrinter,
 }
@@ -19,11 +19,11 @@ pub struct Repl {
 impl Repl {
     /// The REPL constructor. Currently not customizable, but could be extended
     /// to read options / configuration.
-    pub fn new() -> Repl {
+    pub fn new(database: Box<dyn SteelDBInterface>) -> Repl {
         return Repl {
             buffer: String::new(),
             previous_lines: Vec::<String>::new(),
-            database: SteelDBInterface::new(),
+            database: database,
             is_in_multiline: false,
             console: ConsolePrinter::new(4),
         };
@@ -58,7 +58,7 @@ impl Repl {
                         println!("OK!");
                     }
                     ExecutionResult::TableResult(table) => {
-                        self.console.print_table(&table);
+                        self.console.print_table(table);
                     }
                     ExecutionResult::ParseError(error) => {
                         println!("");
