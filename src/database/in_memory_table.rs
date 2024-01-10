@@ -1,3 +1,4 @@
+#![allow(unused)]
 //! In memory data representations.
 use crate::database::config::DATA_DIR;
 use crate::database::file_io::{ColumnarReader, ColumnarWriter, Reader, Writer};

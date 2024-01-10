@@ -110,9 +110,9 @@ impl Writer for ColumnarWriter {
     /// Not implemented. Should append data to the columnar format.
     fn append(
         &self,
-        fields: &HashMap<String, DataType>,
-        columns: &HashMap<String, Vec<DataType>>,
-        file_: File,
+        _fields: &HashMap<String, DataType>,
+        _columns: &HashMap<String, Vec<DataType>>,
+        _file_: File,
     ) -> Result<usize, std::io::Error> {
         return Ok(0 as usize);
     }

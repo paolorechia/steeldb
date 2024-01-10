@@ -1,3 +1,4 @@
+#![allow(unused)]
 //! Defines commands that the VirtualMachine may execute.
 use steeldb_core::Table;
 
