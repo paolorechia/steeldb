@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Debug)]
-struct HelloJSON {
-    hello: String,
+pub struct HelloJSON {
+    pub hello: String,
 }

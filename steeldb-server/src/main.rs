@@ -1,4 +1,5 @@
-use serde::{Deserialize, Serialize};
+use steeldb_core::json_result::HelloJSON;
+
 use std::convert::Infallible;
 use std::net::SocketAddr;
 
@@ -9,11 +10,6 @@ use hyper::service::service_fn;
 use hyper::{Request, Response};
 use hyper_util::rt::TokioIo;
 use tokio::net::TcpListener;
-
-#[derive(Deserialize, Serialize, Debug)]
-struct HelloJSON {
-    hello: String,
-}
 
 async fn hello(_: Request<hyper::body::Incoming>) -> Result<Response<Full<Bytes>>, Infallible> {
     let hello_response = HelloJSON {
