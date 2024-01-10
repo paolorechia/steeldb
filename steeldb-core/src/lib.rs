@@ -4,6 +4,9 @@ pub mod repl;
 pub mod console_printer;
 pub mod steeldb_interface;
 
+#[cfg(feature = "json")]
+pub mod json_result;
+
 pub use crate::table::{Table, TableErrors, SaveMode, ExecutionResult, FileFormat};
 pub use crate::datatypes::DataType;
 pub use crate::repl::Repl;
