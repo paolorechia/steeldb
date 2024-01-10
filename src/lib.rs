@@ -23,7 +23,7 @@
 //! ### Database API
 //!
 //! ```no_run
-//! use steeldb::{SteelDB, ExecutionResult};
+//! use steeldb::{SteelDB, ExecutionResult, SteelDBInterface};
 //!
 //! let mut database = SteelDB::new();
 //! let result = database.execute("select name".to_string());
@@ -42,10 +42,12 @@
 //! Effectively, this is the same as:
 //!  
 //!```no_run
-//!use steeldb::Repl;
+//!use steeldb::SteelDB;
+//!use steeldb_core::Repl;
 //!
 //!fn main() {
-//!    let mut repl = Repl::new();
+//!    let database = SteelDB::new();
+//!    let mut repl = Repl::new(Box::new(database));
 //!    repl.main_loop();
 //!}
 //!
@@ -58,4 +60,4 @@ mod database;
 
 pub use database::config;
 pub use database::steeldb::SteelDB;
-pub use steeldb_core::{DataType, Table};
+pub use steeldb_core::{DataType, ExecutionResult, SteelDBInterface, Table, TableErrors};
