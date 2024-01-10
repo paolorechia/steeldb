@@ -1,5 +1,7 @@
-use steeldb_core::json_result::HelloJSON;
+use steeldb_core::json_result::TableJSON;
+use steeldb::SteelDB;
 
+use std::collections::HashMap;
 use std::convert::Infallible;
 use std::net::SocketAddr;
 
@@ -12,8 +14,10 @@ use hyper_util::rt::TokioIo;
 use tokio::net::TcpListener;
 
 async fn hello(_: Request<hyper::body::Incoming>) -> Result<Response<Full<Bytes>>, Infallible> {
-    let hello_response = HelloJSON {
-        hello: "world!".to_owned(),
+    let hello_response = TableJSON {
+        table_name: "world!".to_owned(),
+        columns: HashMap::new(),
+        select_columns: Vec::new(),
     };
     let desserialized = serde_json::to_string(&hello_response).unwrap();
     let response = Response::builder()

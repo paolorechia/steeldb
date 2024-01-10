@@ -11,10 +11,13 @@ pub struct TableJSON {
 
 impl TableJSON {
     pub fn from_table(table: Box::<dyn Table>) -> TableJSON {
+        let table_name = table.get_table_name();
+        let select_columns = table.get_select_columns().clone(); 
+        let columns = table.get_columns().clone();
         TableJSON {
-            table_name: table.get_table_name(),
-            columns: table.move_columns(),
-            select_columns: table.move_select_columns(),
+            table_name,
+            select_columns,
+            columns,
         }
     }
 }
