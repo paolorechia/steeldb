@@ -53,6 +53,7 @@ impl Debug for dyn Table {
 
 
 /// The return type given by the [SteelDB::execute] function.
+#[derive(Debug)]
 pub enum ExecutionResult {
     /// A result where a table was successfully computed/retrieved, and is available for inspection.
     TableResult(Box<dyn Table>),

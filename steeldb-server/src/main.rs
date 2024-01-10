@@ -1,5 +1,6 @@
 use steeldb_core::json_result::TableJSON;
 use steeldb::SteelDB;
+use steeldb_core::SteelDBInterface;
 
 use std::collections::HashMap;
 use std::convert::Infallible;
@@ -19,6 +20,11 @@ async fn hello(_: Request<hyper::body::Incoming>) -> Result<Response<Full<Bytes>
         columns: HashMap::new(),
         select_columns: Vec::new(),
     };
+    // TODO: create database ref in main function instead
+    let mut database = SteelDB::new();
+    let result = database.execute("select name;".to_owned());
+    println!("{:?}", result);
+
     let desserialized = serde_json::to_string(&hello_response).unwrap();
     let response = Response::builder()
         .header("Content-Type", "application/json")
