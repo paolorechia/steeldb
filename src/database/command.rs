@@ -13,7 +13,7 @@ pub enum Command {
 /// Defines possible results from a command execution.
 pub enum CommandResult {
     /// Command returned a table.
-    RetrievedDataSuccess(Box<dyn Table + Sync + Send>),
+    RetrievedDataSuccess(Box<dyn Table>),
     /// Command failed by an unexpected reason.
     Error(String),
     /// Command succeded but has no output.

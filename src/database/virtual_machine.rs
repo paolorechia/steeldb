@@ -30,10 +30,8 @@ impl VirtualMachine {
 
                 // if we found an error, we want to immediately abort the nested execution
                 if table_result.is_err() {
-                    // TODO: fix this
-                    // Debug trait is incompatible with Sync (apparently)
-                    // let error = format!("{:?}", table_result.unwrap_err());
-                    return CommandResult::Error("One or more commands failed".to_string());
+                    let error = format!("{:?}", table_result.unwrap_err());
+                    return CommandResult::Error(error);
                 } else {
                     // if our command succeeds, we want to save the result in case the next command needs it
                     let table = table_result.unwrap();

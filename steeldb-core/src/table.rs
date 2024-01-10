@@ -36,7 +36,7 @@ pub trait Table {
         table_name: String,
         select_columns: Vec<String>,
         format: FileFormat,
-    ) -> Result<Box<dyn Table + Sync + Send>, TableErrors>;
+    ) -> Result<Box<dyn Table>, TableErrors>;
     fn get_table_name(&self) -> String;
     fn get_columns(&self) -> &HashMap<String, Vec<DataType>>;
     fn get_select_columns(&self) -> &Vec<String>;
@@ -55,7 +55,7 @@ impl Debug for dyn Table {
 /// The return type given by the [SteelDB::execute] function.
 pub enum ExecutionResult {
     /// A result where a table was successfully computed/retrieved, and is available for inspection.
-    TableResult(Box<dyn Table + Sync + Send>),
+    TableResult(Box<dyn Table>),
     /// A result where a command was successfully executed, but with no output.
     VoidOK,
     /// Parse error. The given input string was not valid for the parser.

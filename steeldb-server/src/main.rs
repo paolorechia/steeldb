@@ -34,14 +34,20 @@ async fn handle_query(
         select_columns: Vec::new(),
     };
     let db_mutex = Arc::clone(&database);
-    tokio::spawn(async move {
-        let mut result: Option<ExecutionResult> = None;
-        {
-            let mut db = db_mutex.lock().unwrap();
-            result = Some(db.execute("select name;".to_owned()));
-        }
-        return result;
-    });
+    let mut result: Option<ExecutionResult> = None;
+    {
+        let mut db = db_mutex.lock().unwrap();
+        result = Some(db.execute("select name;".to_owned()));
+    }
+    // return result;
+    // };
+    // let maybe_execution_result = database_request.await.unwrap();
+    // match maybe_execution_result {
+    //     Some(execution_result) => {
+    //         println!("Executed");
+    //     }
+    //     _ => println!("Failed to execute database request")
+    // }
     // this will be converted into a JSON response
     // with a status code of `201 Created`
     (StatusCode::CREATED, Json(hello_response))
