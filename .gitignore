@@ -23,5 +23,6 @@ calculator
 
 # SteelDB Data
 .steeldb/data
+**.steeldb
 
 durp

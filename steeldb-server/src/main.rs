@@ -1,7 +1,6 @@
 use axum::{extract::State, http::StatusCode, routing::post, Json, Router};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
-use std::thread;
 use steeldb::SteelDB;
 use steeldb_core::json_result::TableJSON;
 use steeldb_core::{ExecutionResult, SteelDBInterface};
@@ -34,21 +33,30 @@ async fn handle_query(
         select_columns: Vec::new(),
     };
     let db_mutex = Arc::clone(&database);
-    let mut result: Option<ExecutionResult> = None;
+    let result: ExecutionResult;
     {
         let mut db = db_mutex.lock().unwrap();
-        result = Some(db.execute("select name;".to_owned()));
+        result = db.execute("select name;".to_owned());
     }
-    // return result;
-    // };
-    // let maybe_execution_result = database_request.await.unwrap();
-    // match maybe_execution_result {
-    //     Some(execution_result) => {
-    //         println!("Executed");
-    //     }
-    //     _ => println!("Failed to execute database request")
-    // }
-    // this will be converted into a JSON response
-    // with a status code of `201 Created`
-    (StatusCode::CREATED, Json(hello_response))
+    match result {
+        ExecutionResult::TableResult(table) => {
+            // TODO: avoid cloning data here
+            return (
+                StatusCode::CREATED,
+                Json(TableJSON {
+                    table_name: table.get_table_name().clone(),
+                    columns: table.get_columns().clone(),
+                    select_columns: table.get_select_columns().clone(),
+                }),
+            );
+        }
+        // TODO: decide how to handle other cases that don't include a table
+        // One option:
+        // https://github.com/tokio-rs/axum/blob/main/examples/error-handling/src/main.rs
+
+        // Another option (probably easier): always include an empty table
+        _ => {
+            return (StatusCode::CREATED, Json(hello_response));
+        }
+    }
 }
