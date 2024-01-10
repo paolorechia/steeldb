@@ -116,7 +116,7 @@ impl Table for InMemoryTable {
         table_name: String,
         select_columns: Vec<String>,
         format: FileFormat,
-    ) -> Result<Box<dyn Table>, TableErrors> {
+    ) -> Result<Box<dyn Table + Sync + Send>, TableErrors> {
         let s = InMemoryTable::get_table_path(&table_name, &format);
         let path = Path::new(&s);
         info!("Loading table in format {:?} from path: {:?}", format, path);
