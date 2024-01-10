@@ -1,65 +1,36 @@
-use steeldb_core::json_result::TableJSON;
+use std::collections::HashMap;
 use steeldb::SteelDB;
+use steeldb_core::json_result::TableJSON;
 use steeldb_core::SteelDBInterface;
 
-use std::collections::HashMap;
-use std::convert::Infallible;
-use std::net::SocketAddr;
+use axum::{http::StatusCode, routing::post, Json, Router};
 
-use http_body_util::Full;
-use hyper::body::Bytes;
-use hyper::server::conn::http1;
-use hyper::service::service_fn;
-use hyper::{Request, Response};
-use hyper_util::rt::TokioIo;
-use tokio::net::TcpListener;
+#[tokio::main]
+async fn main() {
+    // build our application with a route
+    let app = Router::new()
+        // `GET /` goes to `root`
+        .route("/query", post(handle_query));
 
-async fn hello(_: Request<hyper::body::Incoming>) -> Result<Response<Full<Bytes>>, Infallible> {
+    // run our app with hyper, listening globally on port 3000
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
+}
+
+async fn handle_query(// this argument tells axum to parse the request body
+    // as JSON into a `CreateUser` type
+    // Json(payload): Json<CreateUser>,
+) -> (StatusCode, Json<TableJSON>) {
+    // insert your application logic here
     let hello_response = TableJSON {
         table_name: "world!".to_owned(),
         columns: HashMap::new(),
         select_columns: Vec::new(),
     };
-    // TODO: create database ref in main function instead
     let mut database = SteelDB::new();
     let result = database.execute("select name;".to_owned());
-    println!("{:?}", result);
 
-    let desserialized = serde_json::to_string(&hello_response).unwrap();
-    let response = Response::builder()
-        .header("Content-Type", "application/json")
-        .header("content-length", desserialized.len())
-        .body(desserialized.into())
-        .unwrap();
-
-    Ok(response)
-}
-
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-
-    // We create a TcpListener and bind it to 127.0.0.1:3000
-    let listener = TcpListener::bind(addr).await?;
-
-    // We start a loop to continuously accept incoming connections
-    loop {
-        let (stream, _) = listener.accept().await?;
-
-        // Use an adapter to access something implementing `tokio::io` traits as if they implement
-        // `hyper::rt` IO traits.
-        let io = TokioIo::new(stream);
-
-        // Spawn a tokio task to serve multiple connections concurrently
-        tokio::task::spawn(async move {
-            // Finally, we bind the incoming connection to our `hello` service
-            if let Err(err) = http1::Builder::new()
-                // `service_fn` converts our function in a `Service`
-                .serve_connection(io, service_fn(hello))
-                .await
-            {
-                println!("Error serving connection: {:?}", err);
-            }
-        });
-    }
+    // this will be converted into a JSON response
+    // with a status code of `201 Created`
+    (StatusCode::CREATED, Json(hello_response))
 }
