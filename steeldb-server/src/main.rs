@@ -1,8 +1,7 @@
 use axum::{extract::State, http::StatusCode, routing::post, Json, Router};
-use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use steeldb::SteelDB;
-use steeldb_core::json_result::TableJSON;
+use steeldb_core::json_result::{TableJSON, QueryResultJSON};
 use steeldb_core::{ExecutionResult, SteelDBInterface};
 
 #[tokio::main]
@@ -25,13 +24,8 @@ async fn handle_query(
     // this argument tells axum to parse the request body
     // as JSON into a `CreateUser` type
     // Json(payload): Json<CreateUser>,
-) -> (StatusCode, Json<TableJSON>) {
+) -> (StatusCode, Json<QueryResultJSON>) {
     // insert your application logic here
-    let hello_response = TableJSON {
-        table_name: "world!".to_owned(),
-        columns: HashMap::new(),
-        select_columns: Vec::new(),
-    };
     let db_mutex = Arc::clone(&database);
     let result: ExecutionResult;
     {
@@ -41,22 +35,42 @@ async fn handle_query(
     match result {
         ExecutionResult::TableResult(table) => {
             // TODO: avoid cloning data here
-            return (
-                StatusCode::CREATED,
-                Json(TableJSON {
+            let result = QueryResultJSON {
+                table_result: Some(TableJSON {
                     table_name: table.get_table_name().clone(),
                     columns: table.get_columns().clone(),
                     select_columns: table.get_select_columns().clone(),
                 }),
+                message: "query successful".to_string(),
+                status_code: StatusCode::OK.as_u16()
+            };
+            return (
+                StatusCode::OK,
+                Json(result),
             );
         }
-        // TODO: decide how to handle other cases that don't include a table
-        // One option:
-        // https://github.com/tokio-rs/axum/blob/main/examples/error-handling/src/main.rs
-
-        // Another option (probably easier): always include an empty table
-        _ => {
-            return (StatusCode::CREATED, Json(hello_response));
+        ExecutionResult::ParseError(error) => {
+            return (StatusCode::BAD_REQUEST, Json(QueryResultJSON{
+                table_result: None,
+                message: format!("failed to execute query: {error}"),
+                status_code: StatusCode::BAD_REQUEST.as_u16()
+            }));
+        }
+        ExecutionResult::CommandError(error) => {
+            return (StatusCode::INTERNAL_SERVER_ERROR, Json(QueryResultJSON{
+                table_result: None,
+                message: format!("failed to execute query: {error}"),
+                status_code: StatusCode::INTERNAL_SERVER_ERROR.as_u16()
+            }));
+        }
+        ExecutionResult::VoidOK => {
+            return (StatusCode::OK, Json(
+                QueryResultJSON {
+                    table_result: None,
+                    message: format!("Query successful"),
+                    status_code: StatusCode::OK.as_u16()
+                }
+            ))
         }
     }
 }

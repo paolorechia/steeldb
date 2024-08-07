@@ -21,3 +21,10 @@ impl TableJSON {
         }
     }
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct QueryResultJSON {
+    pub table_result: Option<TableJSON>,
+    pub message: String,
+    pub status_code: u16
+}
