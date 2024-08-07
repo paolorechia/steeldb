@@ -1,8 +1,9 @@
 use axum::{extract::State, http::StatusCode, routing::post, Json, Router};
 use std::sync::{Arc, Mutex};
 use steeldb::SteelDB;
-use steeldb_core::json_result::{TableJSON, QueryResultJSON};
+use steeldb_core::json_result::{TableJSON, QueryResultJSON, UserQueryJSON};
 use steeldb_core::{ExecutionResult, SteelDBInterface};
+
 
 #[tokio::main]
 async fn main() {
@@ -19,18 +20,17 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
+
 async fn handle_query(
     State(database): State<Arc<Mutex<SteelDB>>>,
-    // this argument tells axum to parse the request body
-    // as JSON into a `CreateUser` type
-    // Json(payload): Json<CreateUser>,
+    Json(payload): Json<UserQueryJSON>,
 ) -> (StatusCode, Json<QueryResultJSON>) {
     // insert your application logic here
     let db_mutex = Arc::clone(&database);
     let result: ExecutionResult;
     {
         let mut db = db_mutex.lock().unwrap();
-        result = db.execute("select name;".to_owned());
+        result = db.execute(payload.user_query);
     }
     match result {
         ExecutionResult::TableResult(table) => {
